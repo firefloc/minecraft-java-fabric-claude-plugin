@@ -1,0 +1,53 @@
+{
+  "name": "minecraft-java",
+  "version": "1.1.0",
+  "description": "Claude Code and Codex skills for building, inspecting, and verifying a live Minecraft Java Edition world through the minecraft-java Fabric MCP mod.",
+  "author": {
+    "name": "chapmanjw",
+    "url": "https://github.com/chapmanjw"
+  },
+  "homepage": "https://github.com/chapmanjw/minecraft-java-fabric-claude-plugin",
+  "repository": "https://github.com/chapmanjw/minecraft-java-fabric-claude-plugin",
+  "license": "MIT",
+  "keywords": [
+    "minecraft",
+    "minecraft-java",
+    "fabric",
+    "mcp",
+    "codex",
+    "claude-code",
+    "game-server",
+    "agent-skills"
+  ],
+  "skills": "./skills/",
+  "mcpServers": {
+    "minecraft-java": {
+      "type": "http",
+      "url": "http://127.0.0.1:8765/mcp"
+    },
+    "minecraft-java-client": {
+      "type": "http",
+      "url": "http://127.0.0.1:8766/mcp"
+    }
+  },
+  "interface": {
+    "displayName": "Minecraft Java",
+    "shortDescription": "Build and inspect live Minecraft Java worlds",
+    "longDescription": "A gated survey-to-verify builder workflow for Minecraft Java Edition, with Fabric MCP setup and optional rendered-client inspection.",
+    "developerName": "chapmanjw",
+    "category": "Games",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/chapmanjw/minecraft-java-fabric-claude-plugin",
+    "defaultPrompt": [
+      "Build something in my live Minecraft Java world.",
+      "Set up Minecraft Java with the Fabric MCP mod.",
+      "Inspect and verify my current Minecraft build."
+    ],
+    "brandColor": "#5B8C5A",
+    "screenshots": []
+  }
+}

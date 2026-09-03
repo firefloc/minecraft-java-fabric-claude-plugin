@@ -41,6 +41,43 @@ if (plugin) {
   }
 }
 
+// --- Codex plugin manifest ---
+const codexPlugin = readJson(".codex-plugin/plugin.json");
+if (codexPlugin) {
+  for (const k of ["name", "version", "description", "skills", "interface"]) {
+    if (!codexPlugin[k]) fail(`.codex-plugin/plugin.json: missing required field "${k}"`);
+  }
+  if (codexPlugin.name !== "minecraft-java") {
+    fail(`.codex-plugin/plugin.json: name must be "minecraft-java"`);
+  }
+  if (codexPlugin.skills !== "./skills/") {
+    fail(`.codex-plugin/plugin.json: skills must point to "./skills/"`);
+  }
+  const mcpNames = ["minecraft-java", "minecraft-java-client"];
+  if (!codexPlugin.mcpServers || typeof codexPlugin.mcpServers !== "object") {
+    fail(`.codex-plugin/plugin.json: missing direct mcpServers object`);
+  } else {
+    for (const [name, port] of [["minecraft-java", 8765], ["minecraft-java-client", 8766]]) {
+      const server = codexPlugin.mcpServers[name];
+      if (!server || server.type !== "http" || server.url !== `http://127.0.0.1:${port}/mcp`) {
+        fail(`.codex-plugin/plugin.json: ${name} must keep the HTTP endpoint on port ${port}`);
+      }
+    }
+    for (const name of mcpNames) {
+      if (!Object.prototype.hasOwnProperty.call(codexPlugin.mcpServers, name)) {
+        fail(`.codex-plugin/plugin.json: missing MCP server "${name}"`);
+      }
+    }
+  }
+  const iface = codexPlugin.interface || {};
+  for (const k of ["displayName", "shortDescription", "longDescription", "developerName", "category"]) {
+    if (!iface[k]) fail(`.codex-plugin/plugin.json: interface missing "${k}"`);
+  }
+  if (JSON.stringify(codexPlugin).match(/\b(opus|sonnet|haiku)\b/i)) {
+    fail(`.codex-plugin/plugin.json: Codex manifest must not select a Claude model`);
+  }
+}
+
 // --- marketplace manifest ---
 const market = readJson(".claude-plugin/marketplace.json");
 if (market) {
@@ -80,7 +117,7 @@ if (!existsSync(skillsDir)) {
     }
     // --- prefixed-namespace + tier rules (0.9.0 three-tier model) ---
     const PREFIXES = ["setup-", "survey-", "build-", "terrain-", "design-",
-                      "system-", "exec-"];
+                      "system-", "exec-", "minecraft-"];
     if (!PREFIXES.some((p) => name.startsWith(p))) {
       fail(`${rel}: skill "${name}" lacks a namespace prefix (${PREFIXES.join(", ")})`);
     }
@@ -109,7 +146,7 @@ if (!existsSync(skillsDir)) {
 
 // --- taxonomy + reference cores ---
 if (!existsSync(join(root, "skills/TAXONOMY.md"))) {
-  fail("missing skills/TAXONOMY.md (the 28-skill taxonomy)");
+  fail("missing skills/TAXONOMY.md (the skill taxonomy)");
 }
 for (const core of ["reference/orchestration/workflow-spine.md",
                     "reference/orchestration/coherence.md",
@@ -173,13 +210,13 @@ const docFiles = [
   ...walkMd(skillsDir, []),
   ...walkMd(join(root, "reference"), []),
   ...walkMd(agentsDir, []),
-  ...["README.md", "CLAUDE.md"].map((f) => join(root, f)).filter(existsSync),
+  ...["README.md", "CLAUDE.md", "AGENTS.md"].map((f) => join(root, f)).filter(existsSync),
 ];
 const relOf = (abs) => abs.slice(root.length + 1).replace(/\\/g, "/");
 const stripFences = (t) => t.replace(/```[\s\S]*?```/g, ""); // drop code examples
 // matches ${CLAUDE_PLUGIN_ROOT}/<path>, reference|tools|skills|agents/<path>, and <skill>/reference/<path>
 const PATH_RE =
-  /(?:\$\{CLAUDE_PLUGIN_ROOT\}\/)?((?:reference|tools|skills|agents)\/[A-Za-z0-9_./-]+\.(?:md|py|json|txt)|[a-z][a-z0-9-]+\/reference\/[A-Za-z0-9_./-]+\.md)/g;
+  /(?:\$\{CLAUDE_PLUGIN_ROOT\}\/)?(?<![A-Za-z0-9_.-])((?:reference|tools|skills|agents)\/[A-Za-z0-9_./-]+\.(?:md|py|json|txt)|[a-z][a-z0-9-]+\/reference\/[A-Za-z0-9_./-]+\.md)/g;
 for (const abs of docFiles) {
   const rel = relOf(abs);
   const text = stripFences(readFileSync(abs, "utf8"));
@@ -218,6 +255,33 @@ for (const abs of docFiles) {
   }
 }
 
+// --- Codex entrypoint skills ---
+for (const name of ["minecraft-builder", "minecraft-mcp-setup"]) {
+  const rel = `skills/${name}/SKILL.md`;
+  if (!existsSync(join(root, rel))) continue;
+  const body = readFileSync(join(root, rel), "utf8");
+  if (/\$\{CLAUDE_PLUGIN_ROOT\}/.test(body)) {
+    fail(`${rel}: Codex entrypoint must not execute CLAUDE_PLUGIN_ROOT`);
+  }
+  if (/^\s*(model|context|effort|color):/mi.test(body)) {
+    fail(`${rel}: Codex entrypoint must not carry Claude runtime metadata`);
+  }
+}
+for (const rel of ["AGENTS.md", "agents/openai.yaml"]) {
+  if (!existsSync(join(root, rel))) fail(`missing Codex support file: ${rel}`);
+}
+for (const rel of ["agents/codex-minecraft-builder.md", "agents/codex-minecraft-mcp-setup.md"]) {
+  if (!existsSync(join(root, rel))) continue;
+  const body = readFileSync(join(root, rel), "utf8");
+  if (/\$\{CLAUDE_PLUGIN_ROOT\}/.test(body) || /^\s*(model|context|effort|color):/mi.test(body)) {
+    fail(`${rel}: Codex agent adapter must be model- and path-neutral`);
+  }
+}
+for (const name of ["minecraft-builder", "minecraft-mcp-setup"]) {
+  const rel = `skills/${name}/agents/openai.yaml`;
+  if (!existsSync(join(root, rel))) fail(`missing Codex skill metadata: ${rel}`);
+}
+
 // --- taxonomy bijection: every live skill appears in TAXONOMY.md ---
 const taxPath = join(root, "skills/TAXONOMY.md");
 if (existsSync(taxPath)) {
@@ -235,4 +299,4 @@ if (errors.length) {
   for (const e of errors) console.error(`  - ${e}`);
   process.exit(1);
 }
-console.log("✓ plugin, marketplace, skills, and agents are valid");
+console.log("✓ Claude and Codex plugin manifests, skills, and agents are valid");

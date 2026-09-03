@@ -1,16 +1,20 @@
 # Contributing
 
-Thanks for your interest in improving the Minecraft Java Claude plugin.
+Thanks for your interest in improving the Minecraft Java Claude Code + Codex plugin.
 
 ## What's in this repo
 
-This is a Claude Code plugin — there is no build step and no runtime code. It
-is made of:
+This is a dual-host plugin — there is no build step for the markdown content and
+no runtime code in the plugin itself. It is made of:
 
 - `.claude-plugin/plugin.json` — the plugin manifest.
 - `.claude-plugin/marketplace.json` — the marketplace manifest.
+- `.codex-plugin/plugin.json` — the Codex plugin manifest and MCP entries.
+- `agents/openai.yaml` — Codex plugin UI metadata.
+- `agents/codex-*.md` — compact Codex agent adapters.
 - `skills/<name>/SKILL.md` — agent skills, each with YAML frontmatter.
 - `agents/<name>.md` — agents, each with YAML frontmatter.
+- `skills/minecraft-*/` — thin Codex entrypoints that reuse the shared workflow.
 
 ## Checks
 
@@ -24,13 +28,21 @@ It checks that the manifests and `.mcp.json.example` parse, that every skill
 and agent has the required frontmatter, and that skill folder names match the
 `name` in their frontmatter.
 
+For the full Codex manifest schema, also run the Codex plugin validator when it
+is available in your installation:
+
+```sh
+python <codex-install>/skills/.system/plugin-creator/scripts/validate_plugin.py .
+```
+
 ## Conventions
 
-- **Skills are playbooks for Claude, not docs for the user.** Write a `SKILL.md`
-  body as instructions to Claude — what to do, what to ask, what to verify —
-  not as prose for a human to read.
+- **Skills are playbooks for the active host, not docs for the user.** Shared
+  skills should describe what to do, what to ask, and what to verify. Keep
+  Claude-only frontmatter in the existing shared files for compatibility and
+  keep Codex adapters model-neutral.
 - **Descriptions drive invocation.** A skill's or agent's `description` is what
-  Claude matches against to decide when to use it. Make it concrete and
+  the host matches against to decide when to use it. Make it concrete and
   specific about *when* to trigger.
 - **Use the Java MCP tool surface.** Reference tools by their Java names
   (`level_*`, `block_*`, `entity_*`, `structure_*`, `data_storage_*`, …) under
@@ -43,6 +55,9 @@ and agent has the required frontmatter, and that skill folder names match the
 - Keep the stack in lockstep: the Minecraft version, the Fabric API jar, the
   MCP mod jar, and the values referenced in these skills must stay aligned —
   the mod is built per Minecraft version.
+- Keep `minecraft-java` and `minecraft-java-client` as the MCP server names and
+  keep the existing Java tool names unchanged. See
+  `reference/runtime-portability.md` for host-neutral model and path rules.
 
 ## Releasing
 

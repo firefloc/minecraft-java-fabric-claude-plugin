@@ -11,11 +11,12 @@ Usage:
 `<fills.json>` is the list written by `voxel.write_fills_json` —
 [{"from":[x,y,z], "to":[x,y,z], "block":"…"}, …] in WORLD coordinates.
 
-Server URL and auth are read from `~/.claude.json` → mcpServers["minecraft-java"]
-(falling back to a project `.mcp.json` next to the cwd, then to the localhost
-default). On single-player there is no auth; a remote/authenticated server uses
-an `Authorization: Bearer …` header, which is honoured here. ${VAR} and
-${VAR:-default} references in the config are expanded against the environment.
+Server URL and auth are read through the shared `tools/mcp_config.py` reader,
+which accepts Claude Code's `~/.claude.json`, Codex's `~/.codex/config.toml`,
+and a project `.mcp.json`. On single-player there is no auth; a
+remote/authenticated server uses an `Authorization: Bearer …` header, which is
+honoured here. ${VAR} and ${VAR:-default} references in the config are
+expanded against the environment.
 
 block_fill_batch is bounded to 8192 entries per call server-side; this client
 pages larger fill lists into successive calls automatically.
@@ -24,70 +25,33 @@ Stdlib only (urllib) — no extra dependencies.
 """
 import json
 import os
-import re
 import sys
 import urllib.request
+
+try:
+    from mcp_config import expand as _expand
+    from mcp_config import load_server_config, server_entry
+except ModuleNotFoundError:  # direct execution from tools/voxel
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from mcp_config import expand as _expand
+    from mcp_config import load_server_config, server_entry
 
 DEFAULT_URL = "http://localhost:8765/mcp"
 DEFAULT_DIM = "minecraft:overworld"
 SERVER_NAME = "minecraft-java"
 MAX_ENTRIES = 8192               # block_fill_batch server-side cap (BlockTools.MAX_ENTRIES)
 
+
+def _server_entry(config):
+    """Backwards-compatible access to the named server entry."""
+    return server_entry(config, SERVER_NAME)
+
 _session = {"id": None}
 
 
-# --------------------------------------------------------------------------- config
-
-def _expand(value):
-    """Expand ${VAR} and ${VAR:-default} against the environment."""
-    if not isinstance(value, str):
-        return value
-
-    def repl(m):
-        name, default = m.group(1), m.group(2)
-        return os.environ.get(name, default if default is not None else "")
-
-    return re.sub(r"\$\{([A-Za-z_][A-Za-z0-9_]*)(?::-([^}]*))?\}", repl, value)
-
-
-def _server_entry(cfg):
-    """Find the minecraft-java server block in a parsed claude/mcp config."""
-    servers = cfg.get("mcpServers")
-    if isinstance(servers, dict) and SERVER_NAME in servers:
-        return servers[SERVER_NAME]
-    # ~/.claude.json also nests servers per project: projects.<path>.mcpServers
-    for proj in (cfg.get("projects") or {}).values():
-        ps = (proj or {}).get("mcpServers")
-        if isinstance(ps, dict) and SERVER_NAME in ps:
-            return ps[SERVER_NAME]
-    return None
-
-
 def load_config():
-    """Return (url, headers) for the minecraft-java MCP server.
-
-    Reads ~/.claude.json first, then a project .mcp.json in the cwd; falls back
-    to the localhost default with no auth.
-    """
-    candidates = [
-        os.path.join(os.path.expanduser("~"), ".claude.json"),
-        os.path.join(os.getcwd(), ".mcp.json"),
-    ]
-    for path in candidates:
-        try:
-            with open(path, encoding="utf-8") as fh:
-                cfg = json.load(fh)
-        except (OSError, ValueError):
-            continue
-        entry = _server_entry(cfg)
-        if not entry:
-            continue
-        url = _expand(entry.get("url") or DEFAULT_URL)
-        headers = {}
-        for k, v in (entry.get("headers") or {}).items():
-            headers[k] = _expand(v)
-        return url, headers
-    return DEFAULT_URL, {}
+    """Return (url, headers) from Claude, Codex, project, or env config."""
+    return load_server_config(SERVER_NAME, DEFAULT_URL)
 
 
 URL, HEADERS = load_config()

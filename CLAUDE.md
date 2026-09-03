@@ -1,6 +1,8 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with
+code in this repository. The Codex-facing project rules live in `AGENTS.md`;
+keep this Claude-specific file and its manifest unchanged for Claude users.
 
 ## Commands
 
@@ -46,8 +48,8 @@ The plugin adds two things:
   trivial/inline path), routes to one of four **Tier-2 specialty orchestrator**
   skills (`build-natural-world`, `build-settlement`, `build-structure`,
   `build-systems`), which sequence the **Tier-3 leaf** skills (`survey-*`,
-  `terrain-*`, `design-*`, `system-*`, `exec-*`) through one gated pipeline. **28
-  skills total** — see `skills/TAXONOMY.md`.
+  `terrain-*`, `design-*`, `system-*`, `exec-*`) through one gated pipeline. **30
+  skills total, including two host-adapter entry skills** — see `skills/TAXONOMY.md`.
 
 ### The three-tier, no-trivial model (0.9.0)
 
@@ -90,6 +92,11 @@ tools/requirements.txt          ← Python deps for tools/ (core: numpy + Pillow
 tools/requirements-mesh.txt     ← optional deps for the voxel mesh-import path (trimesh, scipy, networkx, lxml)
 .claude-plugin/plugin.json      ← plugin manifest
 .claude-plugin/marketplace.json ← marketplace manifest
+.codex-plugin/plugin.json       ← Codex plugin manifest
+agents/openai.yaml              ← Codex UI metadata
+agents/codex-*.md               ← Codex agent adapters
+AGENTS.md                       ← shared/Codex project rules
+reference/runtime-portability.md ← host/path/model portability contract
 .mcp.json.example               ← reference MCP config template
 scripts/validate-plugin.mjs     ← CI validation script
 ```
@@ -97,8 +104,9 @@ scripts/validate-plugin.mjs     ← CI validation script
 ### Adding a skill
 
 1. Create `skills/<prefix>-<name>/SKILL.md` with YAML frontmatter (`name` =
-   folder; `description`; `model`/`context` per the tier). Use a namespace prefix
-   (`setup-/survey-/build-/terrain-/design-/system-/exec-`); the validator enforces it.
+   folder; `description`; `model`/`context` per the Claude tier). Use a namespace
+   prefix (`setup-/survey-/build-/terrain-/design-/system-/exec-`); the
+   `minecraft-` prefix is reserved for host-adapter entry skills.
 2. A terrain leaf must **link** `reference/terrain/` (never copy the method); a
    `build-*` orchestrator must be `model: opus`, inline (no `context: fork`).
 3. Add it to `skills/TAXONOMY.md` and the `minecraft-builder` routing if Tier-2.
@@ -110,7 +118,9 @@ A one-shot renamer for the prefixed scheme lives at `scripts/migrate-skills.mjs`
 
 ### Key conventions
 
-- Skill bodies are instructions to Claude, not docs for the user.
+- Shared skill bodies are instructions to the active host, not docs for the user;
+  the existing Claude agent files remain the compatibility source and Codex
+  entry skills adapt them without duplicating the workflow.
 - A skill's `description` determines when Claude invokes it — make it concrete and specific.
 - The four setup skills must stay runnable in order, each handing off to the next.
 - Tool references use the Java MCP surface (`level_*`, `block_*`, `entity_*`, `structure_*`, `data_storage_*`, …) under the server name **`minecraft-java`** — never the Bedrock `mc_*` names.

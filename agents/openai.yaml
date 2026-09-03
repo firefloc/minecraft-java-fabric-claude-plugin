@@ -1,0 +1,4 @@
+interface:
+  display_name: "Minecraft Java"
+  short_description: "Build and inspect live Minecraft Java worlds"
+  default_prompt: "Use the Minecraft Java builder workflow to survey, plan, build, inspect, and verify my live world."

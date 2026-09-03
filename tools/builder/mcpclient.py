@@ -5,73 +5,46 @@ Mirrors the proven config-loading + handshake logic of
 `tools/voxel/mcp_place.py`, but as a reusable class with a TOON-decoding
 `call_toon()` helper so callers get Python data instead of raw text.
 
-Server URL and auth are read from `~/.claude.json` → mcpServers["minecraft-java"]
-(then a project `.mcp.json` in the cwd, then the localhost default). ${VAR} and
-${VAR:-default} references are expanded against the environment.
+Server URL and auth are read through `tools/mcp_config.py`, which accepts Claude
+Code's `~/.claude.json`, a project `.mcp.json`, and Codex's
+`~/.codex/config.toml`, with environment-variable overrides. `${VAR}` and
+`${VAR:-default}` references are expanded against the environment.
 
 Stdlib only (urllib). No dependencies.
 """
 from __future__ import annotations
 
 import json
-import os
-import re
 import time
 import urllib.error
 import urllib.request
 
 from . import toon
 
+try:
+    from mcp_config import expand as _expand
+    from mcp_config import load_server_config, server_entry
+except ModuleNotFoundError:  # imported as tools.builder.mcpclient
+    from tools.mcp_config import expand as _expand
+    from tools.mcp_config import load_server_config, server_entry
+
 DEFAULT_URL = "http://localhost:8765/mcp"
 DEFAULT_DIM = "minecraft:overworld"
 SERVER_NAME = "minecraft-java"
+
+
+def _server_entry(config):
+    """Backwards-compatible access to the named server entry."""
+    return server_entry(config, SERVER_NAME)
 
 
 class McpError(RuntimeError):
     pass
 
 
-def _expand(value):
-    if not isinstance(value, str):
-        return value
-
-    def repl(m):
-        name, default = m.group(1), m.group(2)
-        return os.environ.get(name, default if default is not None else "")
-
-    return re.sub(r"\$\{([A-Za-z_][A-Za-z0-9_]*)(?::-([^}]*))?\}", repl, value)
-
-
-def _server_entry(cfg):
-    servers = cfg.get("mcpServers")
-    if isinstance(servers, dict) and SERVER_NAME in servers:
-        return servers[SERVER_NAME]
-    for proj in (cfg.get("projects") or {}).values():
-        ps = (proj or {}).get("mcpServers")
-        if isinstance(ps, dict) and SERVER_NAME in ps:
-            return ps[SERVER_NAME]
-    return None
-
-
 def load_config():
     """Return (url, headers) for the minecraft-java MCP server."""
-    candidates = [
-        os.path.join(os.path.expanduser("~"), ".claude.json"),
-        os.path.join(os.getcwd(), ".mcp.json"),
-    ]
-    for path in candidates:
-        try:
-            with open(path, encoding="utf-8") as fh:
-                cfg = json.load(fh)
-        except (OSError, ValueError):
-            continue
-        entry = _server_entry(cfg)
-        if not entry:
-            continue
-        url = _expand(entry.get("url") or DEFAULT_URL)
-        headers = {k: _expand(v) for k, v in (entry.get("headers") or {}).items()}
-        return url, headers
-    return DEFAULT_URL, {}
+    return load_server_config(SERVER_NAME, DEFAULT_URL)
 
 
 class McpClient:

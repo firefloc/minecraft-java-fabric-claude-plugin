@@ -1,0 +1,4 @@
+interface:
+  display_name: "Minecraft MCP Setup"
+  short_description: "Connect Fabric Minecraft to Codex"
+  default_prompt: "Set up and verify the Minecraft Java Fabric MCP connection."

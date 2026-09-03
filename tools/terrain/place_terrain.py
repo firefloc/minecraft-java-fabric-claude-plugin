@@ -1,8 +1,9 @@
 """Place terrain payloads from the toolkit directly into the world via MCP.
 
 Standalone (stdlib only) MCP client for the live-sculpt / prototype loop and for
-the worker fallback. Reads the server URL + auth the same way the voxel
-``mcp_place.py`` does (``~/.claude.json`` then ``.mcp.json``), then calls:
+the worker fallback. Reads the server URL + auth through the shared
+``tools/mcp_config.py`` reader, which supports Claude Code, Codex, and project
+configuration, then calls:
 
   columns  <plan.json>   -> block_fill_columns (or _strata if the plan has strata
                             and the server advertises the tool; else single-stone)
@@ -18,59 +19,31 @@ Usage:
 from __future__ import annotations
 
 import json
-import os
 import sys
 import time
 import urllib.request
+
+try:
+    from mcp_config import expand as _expand
+    from mcp_config import load_server_config, server_entry
+except ModuleNotFoundError:  # direct execution from tools/terrain
+    import os
+
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from mcp_config import expand as _expand
+    from mcp_config import load_server_config, server_entry
 
 DEFAULT_URL = "http://127.0.0.1:8765/mcp"
 _session = {"id": None}
 
 
-def _expand(v: str) -> str:
-    if not isinstance(v, str):
-        return v
-    import re
-
-    def sub(m):
-        name = m.group(1)
-        default = m.group(2)
-        if ":-" in (m.group(0)) and default is not None:
-            return os.environ.get(name, default)
-        return os.environ.get(name, "")
-    return re.sub(r"\$\{([A-Za-z_][A-Za-z0-9_]*)(?::-([^}]*))?\}", sub, v)
-
-
-def _server_entry(cfg: dict):
-    # look for an mcpServers/minecraft-java style entry
-    servers = cfg.get("mcpServers") or {}
-    for key in ("minecraft-java", "minecraft_java", "minecraft"):
-        if key in servers:
-            return servers[key]
-    # nested under projects
-    for proj in (cfg.get("projects") or {}).values():
-        servers = proj.get("mcpServers") or {}
-        for key in ("minecraft-java", "minecraft_java", "minecraft"):
-            if key in servers:
-                return servers[key]
-    return None
+def _server_entry(config: dict):
+    """Backwards-compatible access to the named server entry."""
+    return server_entry(config, "minecraft-java")
 
 
 def load_config():
-    for path in (os.path.join(os.path.expanduser("~"), ".claude.json"),
-                 os.path.join(os.getcwd(), ".mcp.json")):
-        try:
-            with open(path, encoding="utf-8") as fh:
-                cfg = json.load(fh)
-        except (OSError, ValueError):
-            continue
-        entry = _server_entry(cfg)
-        if not entry:
-            continue
-        url = _expand(entry.get("url") or DEFAULT_URL)
-        headers = {k: _expand(v) for k, v in (entry.get("headers") or {}).items()}
-        return url, headers
-    return DEFAULT_URL, {}
+    return load_server_config("minecraft-java", DEFAULT_URL)
 
 
 URL, HEADERS = load_config()

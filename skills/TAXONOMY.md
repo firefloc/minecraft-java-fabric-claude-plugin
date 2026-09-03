@@ -1,6 +1,6 @@
 # Skill Taxonomy
 
-The 28 skills of the minecraft-builder plugin, grouped by prefix namespace and
+The 30 skills of the minecraft-builder plugin, grouped by prefix namespace and
 tier. Plugin skills are discovered flat (`skills/<name>/SKILL.md`); the prefix is
 the namespace convention (they group in the `/` menu). The three-tier
 orchestration model and the no-trivial routing rule are in
@@ -15,10 +15,22 @@ orchestration model and the no-trivial routing rule are in
   context. Full coverage — every request maps to exactly one.
 - **Tier 3** — **leaf** specialists: forked, single-purpose, return a result.
 
+## Runtime portability
+
+The `model / context` column below is Claude Code compatibility metadata, not a
+model requirement for Codex. Codex maps the workflow to the logical roles in
+`reference/runtime-portability.md`: `lead` for routing/design/planning,
+`specialist` for research/inspection/blueprint work, `executor` for bounded
+mechanical work, and `host-default` for setup. Codex uses its configured model
+and native subagents when available; it runs delegated work sequentially when
+that facility is unavailable.
+
 ## The skills
 
-| Skill | Group | Tier | model / context | Role |
+| Skill | Group | Tier | model / context (Claude compatibility) | Role |
 |---|---|---|---|---|
+| minecraft-builder | adapter | 1 | host-default / inline | Codex entrypoint that reuses the existing builder agent and shared spine |
+| minecraft-mcp-setup | adapter | setup | host-default / inline | Codex entrypoint that reuses the existing four setup phases |
 | build-natural-world | build | 2 | opus / inline | Orchestrates terrain/landscape/wonder/cave regions |
 | build-settlement | build | 2 | opus / inline | Orchestrates villages/cities/districts/building+grounds |
 | build-structure | build | 2 | opus / inline | Orchestrates one sited building/replica/statue/house |
@@ -46,7 +58,7 @@ orchestration model and the no-trivial routing rule are in
 | setup-fabric | setup | — | inherit / inline | Install Minecraft + Fabric (setup stack) |
 | setup-mod | setup | — | inherit / inline | Install the MCP mod + Fabric API (was install-mcp-mod) |
 | setup-server | setup | — | inherit / inline | Configure & launch the MCP server (was setup-mcp-server) |
-| setup-connect | setup | — | inherit / inline | Register the server with Claude (was connect-claude) |
+| setup-connect | setup | — | inherit / inline | Register the server with the active host (was connect-claude) |
 
 ## Routing table (primary intent → Tier-2 orchestrator)
 

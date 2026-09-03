@@ -14,7 +14,7 @@ import os
 import sys
 
 # Make the bundled `voxel` package importable regardless of cwd. In a skill,
-# inject ${CLAUDE_PLUGIN_ROOT}/tools here instead of walking up from __file__.
+# resolve the plugin's `tools` directory from the installed package root.
 TOOLS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, TOOLS_DIR)
 

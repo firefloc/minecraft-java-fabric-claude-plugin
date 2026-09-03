@@ -1,9 +1,9 @@
 # minecraft-builder tools
 
 Helper scripts the builder skills run on the local machine. They are bundled
-with the plugin and referenced from skills via
-`${CLAUDE_PLUGIN_ROOT}/tools/…`. Everything here runs in **Claude Code** (CLI or
-desktop app), where the agent has local Bash and can read the PNGs it produces.
+with the plugin and shared by **Claude Code** and **Codex**. Resolve their paths
+from the installed plugin root or checkout; the scripts themselves do not
+depend on a host-specific plugin-root environment variable.
 
 ## Dependencies
 
@@ -28,11 +28,13 @@ the `inspector` issuing dozens of scan calls, the harness POSTs everything
 directly and returns one compact digest. It is the token-efficient path for
 static, contract-checked work.
 
-It is **stdlib-only** — no numpy/Pillow needed (unlike voxel/terrain) — and reads
-the server URL/auth from `~/.claude.json` like `voxel/mcp_place.py`.
+It is **stdlib-only** — no numpy/Pillow needed (unlike voxel/terrain) — and
+reads the server URL/auth through `tools/mcp_config.py`, which supports the
+project `.mcp.json`, Claude Code's `~/.claude.json`, and Codex's
+`~/.codex/config.toml`.
 
 ```sh
-P=${CLAUDE_PLUGIN_ROOT}/tools/builder/harness.py
+P=/path/to/minecraft-java-fabric-claude-plugin/tools/builder/harness.py
 python $P mode                          # dedicated vs single-player (gameTime test)
 python $P selftest                      # write-readiness (forceload→set→read→restore)
 python $P run    <plan.toon> <phase>    # execute a phase (force-load-bracketed, banded)
@@ -45,14 +47,15 @@ failed check. Think of it as a test harness: `plan.toon` `steps` are the
 code, `acceptance` + `quality_contract` are the assertions, `verify` is the test
 runner. The model keeps design, freshness judgement, failure diagnosis, and the
 perceptual "does it look right" call (renders + user checkpoints). Full detail:
-`${CLAUDE_PLUGIN_ROOT}/reference/build-harness.md`.
+`reference/execution/build-harness.md`.
 
 ### Modules
 
 | Module | What it gives you |
 | ------ | ----------------- |
+| `mcp_config` | Shared Claude/Codex/project/environment MCP endpoint and bearer-token discovery. |
 | `builder.toon` | Minimal TOON reader — parses `plan.toon` and the server's TOON tool responses. |
-| `builder.mcpclient` | Generic MCP HTTP client (handshake, `call_toon`), config from `~/.claude.json`. |
+| `builder.mcpclient` | Generic MCP HTTP client (handshake, `call_toon`), config from Claude, Codex, project, or environment settings. |
 | `builder.harness` | Plan model, runner (op→tool, force-load bracketing/banding), verifier (contract checks), CLI. |
 
 ## The `voxel` toolkit — give yourself eyes before you place blocks
@@ -76,7 +79,7 @@ The loop (seconds per iteration, all offline):
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.join(os.environ["CLAUDE_PLUGIN_ROOT"], "tools"))
+sys.path.insert(0, "/path/to/minecraft-java-fabric-claude-plugin/tools")
 from voxel import Palette, VoxelModel, render_views, write_fills_json
 
 pal = Palette.building()                 # 16 concretes, stone, wood, glass, copper…
@@ -122,7 +125,7 @@ fills list into a tool call (the #1 friction on a big build):
 python tools/voxel/mcp_place.py place /path/scratch/r1s_fills.json replace
 ```
 
-It reads the server URL/auth from `~/.claude.json`, does the MCP handshake, and
+It reads the server URL/auth from the shared config loader, does the MCP handshake, and
 POSTs the fills as `block_fill_batch` calls — paging automatically past the
 **8192-entry** cap. Stdlib only. The **`terrain` toolkit below shares this exact
 placement path.**
@@ -167,7 +170,7 @@ The loop (seconds per iteration, all offline):
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.join(os.environ["CLAUDE_PLUGIN_ROOT"], "tools"))
+sys.path.insert(0, "/path/to/minecraft-java-fabric-claude-plugin/tools")
 from terrain import HeightField, TerrainLayers, render_views, write_terrain_fills
 
 hf = (HeightField(160, 128, sea_level=62)

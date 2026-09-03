@@ -1,8 +1,9 @@
 {
   "//": "Reference MCP config for the Minecraft Java MCP servers (the Fabric mod).",
   "//1": "Template only — it is NOT auto-loaded by the plugin. The setup-connect",
-  "//2": "skill registers these for you; copy to .mcp.json in a project (or use",
-  "//3": "`claude mcp add`) if you'd rather do it by hand.",
+  "//2": "skill registers these for you in Claude Code; Codex gets the same local",
+  "//3": "defaults from .codex-plugin/plugin.json. Copy to .mcp.json (or use the",
+  "//3a": "host CLI) if you'd rather configure a project by hand.",
   "//4": "minecraft-java = the WORLD server (read/write the world). Runs wherever a",
   "//5": "  Minecraft server runs: a dedicated server, or single-player's integrated server.",
   "//6": "minecraft-java-client = the INSPECTION server — SEE the world as a player does:",

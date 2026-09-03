@@ -1312,7 +1312,7 @@ def detect_ziggurat(slabs):
     return shared >= 2
 
 
-NONNEG_REF = "${CLAUDE_PLUGIN_ROOT}/reference/terrain/non-negotiables.md"
+NONNEG_REF = "reference/terrain/non-negotiables.md"
 
 
 def lint_phase(plan, phase):

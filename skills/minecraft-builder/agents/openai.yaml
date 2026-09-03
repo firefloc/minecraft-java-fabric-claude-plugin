@@ -1,0 +1,4 @@
+interface:
+  display_name: "Minecraft Builder"
+  short_description: "Run the gated live-world build workflow"
+  default_prompt: "Survey, plan, build, inspect, and verify a Minecraft Java build in the live world."
