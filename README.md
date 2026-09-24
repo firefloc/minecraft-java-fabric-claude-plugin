@@ -349,7 +349,9 @@ the real-client frame for in-game verification when it's connected.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and how to validate
-changes, [CHANGELOG.md](CHANGELOG.md) for release history, and
+changes, [docs/portability-smoke-test.md](docs/portability-smoke-test.md) for the
+per-host verification matrix and its current PASS / NON TESTÉ state,
+[CHANGELOG.md](CHANGELOG.md) for release history, and
 [SECURITY.md](SECURITY.md) to report a vulnerability.
 
 ## License
