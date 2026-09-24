@@ -6,15 +6,17 @@ description: >-
   Use when the Minecraft world server or optional rendered client is not ready.
 ---
 
-# Minecraft MCP Setup for Codex
+# Minecraft MCP Setup — shared entrypoint (Claude Code, Codex, Hermes Agent)
 
-This is the Codex entrypoint for the existing four-phase setup agent. Reuse
-`agents/minecraft-mcp-setup.md` for the detailed setup decisions and the shared
-`setup-fabric`, `setup-mod`, `setup-server`, and `setup-connect` skills; this
-file supplies only the host-specific connection adapter.
+This is the host-neutral entrypoint for the existing four-phase setup agent.
+Reuse `agents/minecraft-mcp-setup.md` for the detailed setup decisions and the
+shared `setup-fabric`, `setup-mod`, `setup-server`, and `setup-connect` skills;
+this file supplies only the host-specific connection adapter.
 
-Read `reference/runtime-portability.md` and
-`reference/mcp/codex-connection.md` before changing a local installation.
+Before changing a local installation, read `reference/runtime-portability.md`
+— its host table catalogues the connection adapter for each host, and the
+per-host guides are `reference/mcp/codex-connection.md` (Codex) plus the
+manifest-registered entries under Claude Code.
 
 ## Procedure
 
@@ -24,21 +26,22 @@ Read `reference/runtime-portability.md` and
 2. Run the existing setup phases in order, verifying each phase before moving
    on: `setup-fabric` → `setup-mod` → `setup-server` → `setup-connect`. When
    the shared `setup-connect` text presents a Claude CLI command, keep its
-   endpoint and server-name semantics but use the Codex connection procedure
-   below instead of executing that host-specific command.
+   endpoint and server-name semantics but use the connection procedure for the
+   active host instead of executing that host-specific command.
 3. Confirm the unchanged MCP names and tools. The world endpoint is
    `minecraft-java` and the optional rendered-client endpoint is
    `minecraft-java-client`; do not rename either one or translate Java tool
    names to a Bedrock surface.
-4. Codex plugins provide the default local HTTP entries from
-   `.codex-plugin/plugin.json`. For a remote or authenticated endpoint, use
-   the commands in `reference/mcp/codex-connection.md` and keep the bearer
-   token in an environment variable.
+4. Supply the default local HTTP entries through the host: the Claude and Codex
+   plugin manifests carry them; Hermes Agent reads them from `mcp_servers` in
+   its profile config. For a remote or authenticated endpoint, use the active
+   host's guide and keep the bearer token in an environment variable.
 5. Verify with a live `server_get_status` call on `minecraft-java`. If a real
    client is running, also verify `client_status` and use `view_capture` when
    the workflow needs visual inspection. A server-only setup must be reported
    as server-only.
 
 Do not claim setup is complete from file copies alone: the connection and the
-actual server status must be checked. Invoke explicitly as
-`$minecraft-java:minecraft-mcp-setup` when needed.
+actual server status must be checked. Explicit invocation is host-specific:
+`$minecraft-java:minecraft-mcp-setup` under Codex, the `minecraft-mcp-setup`
+skill name under Hermes Agent.

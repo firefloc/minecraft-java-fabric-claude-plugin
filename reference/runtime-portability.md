@@ -1,8 +1,34 @@
 # Runtime portability
 
-The implementation is shared between Claude Code and Codex. Host-specific
-metadata belongs at the edges; the Minecraft workflow and tool surface stay in
-the shared `skills/`, `reference/`, and `tools/` trees.
+The implementation is shared between Claude Code, Codex and Hermes Agent.
+Host-specific metadata belongs at the edges; the Minecraft workflow and tool
+surface stay in the shared `skills/`, `reference/`, and `tools/` trees.
+
+## Host surface: one contract, three adapters
+
+Shared instructions name a **server** plus the **native Java tool name**
+(`minecraft-java` + `server_get_status`, `minecraft-java-client` +
+`view_capture`). They never hardcode a host's prefixed spelling: each host
+resolves the name it actually discovered.
+
+| | Claude Code | Codex | Hermes Agent |
+| --- | --- | --- | --- |
+| Plugin root | directory containing `.claude-plugin/plugin.json`; Claude expands `${CLAUDE_PLUGIN_ROOT}` when a skill runs | directory containing `.codex-plugin/plugin.json`, or the repository checkout | the clone itself; `skills/` is registered through `skills.external_dirs` |
+| `server_get_status` | `mcp__minecraft-java__server_get_status` | the same shape, resolved by Codex | `mcp__minecraft_java__server_get_status` |
+| `view_capture` | `mcp__minecraft-java-client__view_capture` | the same shape, resolved by Codex | `mcp__minecraft_java_client__view_capture` |
+| Ask a question | the `AskUserQuestion` tool | ask in the conversation | ask in the conversation (the active interface's clarification prompt) |
+| No sub-agent | inline, or `context: fork` in Claude metadata | current conversation, or a native Codex subagent when available | current conversation, or `delegate_task` when available |
+
+Hermes normalizes every MCP server and tool name to `[A-Za-z0-9_]`, so the two
+hyphens in `minecraft-java-client` become underscores. The expected Hermes
+prefixes above are a prediction from that rule; **the host's actual discovery
+stays the authority** — if `hermes skills` or a session lists a different
+spelling, that spelling wins. Local Hermes skills take precedence over
+`external_dirs` entries on a name collision, so a conflicting local skill must
+be detected rather than silently shadowing a shared one.
+
+No delegation facility on the active host means the phases run sequentially in
+one conversation. It never means a gate is dropped.
 
 ## Plugin root and paths
 
@@ -10,10 +36,11 @@ The plugin root is the directory containing `.claude-plugin/plugin.json` or
 `.codex-plugin/plugin.json`.
 
 Claude Code legacy instructions use the `${CLAUDE_PLUGIN_ROOT}` token because
-Claude expands it when a skill runs. Codex does not define that token. In Codex,
-resolve a reference from the installed plugin package or repository checkout,
-and pass an absolute path (or a path relative to the current checkout) to a
-helper. Never send the literal token to a shell or Python process.
+Claude expands it when a skill runs. Codex and Hermes do not define that token.
+Outside an explicitly Claude-labelled instruction, resolve the root from the
+installed plugin package or the repository checkout and pass an absolute,
+quoted path to a helper — a checkout path may contain spaces. Never send the
+literal token to a shell or Python process.
 
 The bundled Python helpers discover their own package location and share MCP
 configuration logic in `tools/mcp_config.py`; they do not require a host
