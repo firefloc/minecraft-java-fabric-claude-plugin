@@ -136,7 +136,7 @@ Write `.minecraft-builder/<project>/plan.toon` in **TOON**
   these Java-exclusive features (the worker executes them with the op
   vocabulary above):
   - **Biome-matched palettes** — the survey's `biome:` entry gives the
-    `id`; cross-reference `${CLAUDE_PLUGIN_ROOT}/reference/terrain/palettes.md`
+    `id`; cross-reference `$PLUGIN_ROOT/reference/terrain/palettes.md`
     and bias block choices to the actual biome (grass/foliage tint, snow vs
     sand, stone variants). Call `level_get_biome_at` if no survey data is
     present.
@@ -244,7 +244,7 @@ Row types — pick the ones that apply to your build:
 
 Terrain phases get a richer set of contract rows specific to the
 non-negotiables — see
-`${CLAUDE_PLUGIN_ROOT}/reference/terrain/non-negotiables.md`.
+`$PLUGIN_ROOT/reference/terrain/non-negotiables.md`.
 
 Every `walkability`, `doors`, and `headroom` row in the contract is one
 `exec-inspect` samples and one `exec-worker` is forbidden to silently work

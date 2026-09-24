@@ -16,7 +16,7 @@ rules differ, so classify first.
 The mechanical test (the harness does this for you):
 
 ```sh
-python ${CLAUDE_PLUGIN_ROOT}/tools/builder/harness.py mode
+python "$PLUGIN_ROOT/tools/builder/harness.py" mode
 ```
 
 It samples overworld `gameTime` twice ~1s apart at 0 players:
@@ -42,7 +42,7 @@ loads chunks on demand, but `block_set_state`/fills only affect already-loaded
 chunks and **silently no-op** otherwise. Confirm writes up front:
 
 ```sh
-python ${CLAUDE_PLUGIN_ROOT}/tools/builder/harness.py selftest
+python "$PLUGIN_ROOT/tools/builder/harness.py" selftest
 ```
 
 It force-loads a scratch column, places a marker, reads it back, restores it, and

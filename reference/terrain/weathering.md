@@ -11,7 +11,7 @@ Break up any uniform surface with 5–15% variant noise:
   `minecraft:coarse_dirt` block, say) with `structure_save_from_world`. Load
   it across the target region with `structure_load_to_world` at `integrity 0.3`
   with a unique seed — only ~30% of positions place. Repeat with other blocks
-  and other seeds to layer noise. (See `${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md` for the
+  and other seeds to layer noise. (See `$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md` for the
   integrity mechanic.)
 - **Replace-fill method.** Chain `replace`-mode fills at descending coverage
   to convert subsets of a base block to variants.
@@ -31,7 +31,7 @@ curtain" / "vertical drip" look), and separately it explodes into thousands of
   OK on a cliff; low-freq only on a ramp.
 - Same root cause as the "real strata are roughly horizontal with low-frequency
   undulation, never per-column random" note in
-  `${CLAUDE_PLUGIN_ROOT}/reference/terrain/research.md` — keep the jitter smooth
+  `$PLUGIN_ROOT/reference/terrain/research.md` — keep the jitter smooth
   and low-frequency, not per-column.
 
 ## Detail-block library — use sparsely, never uniformly

@@ -16,7 +16,7 @@ color: green
 
 A **specialty orchestrator** for working/connective systems. Runs **inline**,
 invokes Tier-3 leaves, threads the **shared coherence context**. Read
-`${CLAUDE_PLUGIN_ROOT}/reference/orchestration/coherence.md` and
+`$PLUGIN_ROOT/reference/orchestration/coherence.md` and
 `workflow-spine.md` first. Keep the machine **working** while making it belong to
 the world — the two goals are reconciled here, not traded off.
 

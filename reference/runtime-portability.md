@@ -46,6 +46,30 @@ The bundled Python helpers discover their own package location and share MCP
 configuration logic in `tools/mcp_config.py`; they do not require a host
 environment variable for the plugin root.
 
+### Resolving the plugin root in commands
+
+Shared instructions write `$PLUGIN_ROOT` for the **absolute** path of the plugin
+root and quote it (a checkout path may contain spaces). No shared example
+assumes the current directory is the plugin root. Resolve it once per shell:
+
+```sh
+PLUGIN_ROOT="${PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT}}"
+```
+
+That single line is correct on all three hosts: Claude Code expands the token
+inside the skill text, so the default yields the real root; Codex and Hermes
+Agent have no such token, so an exported `PLUGIN_ROOT` is used instead. When
+working outside a host that expands the token, set it directly:
+
+```sh
+PLUGIN_ROOT=/absolute/path/to/the/plugin
+```
+
+`agents/minecraft-builder.md` is the Claude Code agent definition, so it keeps
+`${CLAUDE_PLUGIN_ROOT}` — that is an explicitly Claude-labelled instruction, not
+a shared example. Anywhere a shared instruction is expected to run on Codex or
+Hermes Agent, use `$PLUGIN_ROOT`.
+
 ## Model and delegation roles
 
 Shared workflow instructions use these logical roles:

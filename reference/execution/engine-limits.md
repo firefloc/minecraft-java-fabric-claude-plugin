@@ -2,7 +2,7 @@
 
 The canonical list of hard limits and quirks for the `minecraft-java` MCP tool
 surface. Every skill that places, scans, or generates blocks should follow it.
-Cite as `${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md`.
+Cite as `$PLUGIN_ROOT/reference/execution/engine-limits.md`.
 
 Some entries are marked **VERIFY** — the mod's *source* and an earlier *build
 session* disagree about them, so the honest state is "unconfirmed." Smoke-test
@@ -137,7 +137,7 @@ mitigation for each live in the section noted; this table is the index.
   Zion rail batch of 1,928 one-block fills left 4 cells unplaced this way; a
   cart stalled dead at each gap. **Don't trust the batch return for 1-wide
   critical features — re-scan and patch after placing.** The continuity verifier
-  `${CLAUDE_PLUGIN_ROOT}/tools/voxel/continuity.py` does exactly this:
+  `$PLUGIN_ROOT/tools/voxel/continuity.py` does exactly this:
   `verify_and_patch(intended_cells, dimension, y, shape_of=…, block="minecraft:rail")`
   scans the feature's Y-layer, diffs the intended cell list with `find_gaps`,
   and `set_state`s the missing cells (`set_state` is reliable per-block). It logs
@@ -186,18 +186,18 @@ otherwise — so a successful `block_get_state` is *not* proof a write will land
   `protect:` block in `plan.toon` (rows of `{corner_a, corner_b}` as "x z") and
   re-asserts those chunk bands with `forceload add` as the last op of every
   force-toggling phase — see
-  `${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`.
+  `$PLUGIN_ROOT/reference/execution/build-harness.md`.
 - **Cap: 256 chunks per dimension.** Regions wider than that must be built in
   **Z-bands** (≤256 chunks each), one force-load at a time. Force-load is
   **per-dimension** — re-do it in the Nether/End.
 - **The build harness does all of this for you.** `harness.py run`/`build`
   brackets each phase, auto-bands under the cap, and flags any `blocks_changed: 0`
   as a probable force-load miss. See
-  `${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`.
+  `$PLUGIN_ROOT/reference/execution/build-harness.md`.
 - **Detect the mode first** (`harness.py mode`): a dedicated server ticks 24/7 and
   needs force-loading; a single-player integrated server needs a focused client
   and freezes ticks when unfocused. See
-  `${CLAUDE_PLUGIN_ROOT}/reference/execution/startup-and-recovery.md`.
+  `$PLUGIN_ROOT/reference/execution/startup-and-recovery.md`.
 - **Diagnostics: `entity_query` / `@e` selectors only enumerate entities in
   LOADED chunks.** A `summon` that reports `successCount: 1` followed by an empty
   query usually means the target chunk is not loaded (check
@@ -299,7 +299,7 @@ otherwise — so a successful `block_get_state` is *not* proof a write will land
   `tools/voxel/mcp_place.py` paces and retries; a hand-rolled placer must too.
   Driving such a generated placement script is a first-class execution mode for
   forms too large to be one structure template — see
-  `${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`.
+  `$PLUGIN_ROOT/reference/execution/build-harness.md`.
 
 ## Terrain helpers (mod v0.3.0+)
 

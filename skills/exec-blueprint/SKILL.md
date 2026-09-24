@@ -64,7 +64,7 @@ For every element in the plan's `blueprints` list:
      models, anything image-mapped or parametric), generate a structure `.nbt`
      and write it with `structure_file_write` (content is base64). Heavier —
      only use when a script already produces NBT. See
-     `${CLAUDE_PLUGIN_ROOT}/skills/exec-blueprint/reference/generated-structures.md`.
+     `$PLUGIN_ROOT/skills/exec-blueprint/reference/generated-structures.md`.
 2. Build it from the plan's exact materials and dimensions.
 3. Save it under the `mcb:<project>_<element>` name. Java structure templates
    are saved as `.nbt` files under `<world>/generated/<namespace>/structures/`.

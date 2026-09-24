@@ -33,7 +33,7 @@ final sweep. Guard against that:
   `built` with a token. Starting the next iteration before the last verified is
   how a loop silently ships a row of unverified builds while reporting progress.
 - **Before reporting done, confirm a human can perceive the result.** Run
-  `python ${CLAUDE_PLUGIN_ROOT}/tools/builder/harness.py perceivable`: it checks
+  `python "$PLUGIN_ROOT/tools/builder/harness.py" perceivable`: it checks
   every `built`/`partial` element against world spawn and flags any whose nearest
   point is beyond render distance (~200 blocks) with no registered connecting
   transit. A build that nobody standing in-world can see or reach is not done —
@@ -55,7 +55,7 @@ final sweep. Guard against that:
   starts so they don't all hit the rate limit at once.
 - **Force-load per zone, and mind the 256-chunk cap.** On a dedicated/unattended
   server each zone's write envelope must be force-loaded before writing and
-  released after (the build harness does this; see `${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`).
+  released after (the build harness does this; see `$PLUGIN_ROOT/reference/execution/build-harness.md`).
   The cap is **256 chunks per dimension** — disjoint parallel zones share that
   budget, so keep each zone's envelope modest and release it when the zone is done
   rather than holding every zone loaded at once.
@@ -65,7 +65,7 @@ final sweep. Guard against that:
   or crop growth self-completing overnight. On a **dedicated** server with
   `pause-when-empty-seconds=0` the tick queue runs 24/7 and these *do* advance —
   as long as the chunk stays force-loaded. Detect which you're on with
-  `harness.py mode` (see `${CLAUDE_PLUGIN_ROOT}/reference/execution/startup-and-recovery.md`) and report it.
+  `harness.py mode` (see `$PLUGIN_ROOT/reference/execution/startup-and-recovery.md`) and report it.
   Either way, verify mechanisms by an immediate fire while active rather than
   waiting for a cycle to self-complete across a context gap, and force-load the
   work zone so block ops don't no-op.

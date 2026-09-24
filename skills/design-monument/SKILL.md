@@ -80,7 +80,7 @@ giant logo), **author a model you can see and verify it against the references
 before placing a single block.** You cannot see the world, and a wrong
 silhouette cannot be fixed by detailing — so the cheap iteration happens
 offline, on a render, not in-world. The bundled `voxel` toolkit
-(`${CLAUDE_PLUGIN_ROOT}/tools/voxel`) authors a parametric numpy model, renders
+(`$PLUGIN_ROOT/tools/voxel`) authors a parametric numpy model, renders
 three orthogonal views to PNG (which you **Read** and compare to references),
 then decomposes the verified model into world fills you place in one
 `block_fill_batch`. After building, confirm with a **scan-render**
@@ -109,7 +109,7 @@ are in **`reference/render-verify.md`**.
   file (64×384×64) — split it into tiles along natural anatomy seams (a
   waist, a neck, a limb joint), each a `mcb:<project>_<element>` structure.
 - Keep `fill` steps in `plan.toon` pre-tiled to ≤32,768 blocks. For the full
-  limit detail, follow `${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`.
+  limit detail, follow `$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`.
 
 ## Sibling coordination
 
@@ -185,7 +185,7 @@ orchestrator can hand it to whichever sibling it sequences next.
    fills don't disturb the spawned entities.
 
    **Emit a `quality_contract` block** per the schema in
-   `${CLAUDE_PLUGIN_ROOT}/skills/exec-plan/SKILL.md`.
+   `$PLUGIN_ROOT/skills/exec-plan/SKILL.md`.
    For monuments and sculptures the contract should include:
    - **silhouette** rows asserting the outline is legible from the
      intended viewing distance (sample surface points; height variance

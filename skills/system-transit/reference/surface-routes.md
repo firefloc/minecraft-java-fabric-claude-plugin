@@ -96,7 +96,7 @@ surrounding rock) is a `terrain-integrate` concern — flag it.
 
 "Step on a plate and ride" is a common ask. Command blocks execute on this mod
 (datapack functions are inert — see
-`${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md`), so the working
+`$PLUGIN_ROOT/reference/execution/engine-limits.md`), so the working
 pattern is a pressure plate powering an impulse command block, then a chain of
 command blocks that clear the old cart, summon a tagged cart with launch motion,
 and `ride @p mount` the player into it. `/ride mount` teleports the player in

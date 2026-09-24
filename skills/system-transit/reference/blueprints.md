@@ -82,7 +82,7 @@ then stalled at each of them after it slowed. For any 1-wide critical line
 (rail, redstone, a thin wall), do not trust the batch return — re-scan the
 feature's Y-layer and patch.
 
-Run `${CLAUDE_PLUGIN_ROOT}/tools/voxel/continuity.py` after laying the line:
+Run `$PLUGIN_ROOT/tools/voxel/continuity.py` after laying the line:
 `verify_and_patch(intended_cells, dimension, y, shape_of=..., block="minecraft:rail")`
 scans the layer in cap-sized tiles, diffs the intended cell list against what is
 present (`find_gaps(intended, present)` is the pure set diff under it),
@@ -90,4 +90,4 @@ present (`find_gaps(intended, present)` is the pure set diff under it),
 was not), and returns the patched cells so the gap is logged rather than silent.
 The `exec-inspect` pass should assert the scanned layer count equals the
 intended count. Hard tool caps (scan volume, batch entries) live in
-`${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md`.
+`$PLUGIN_ROOT/reference/execution/engine-limits.md`.

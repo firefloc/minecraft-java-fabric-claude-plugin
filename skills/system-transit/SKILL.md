@@ -108,7 +108,7 @@ Both are plan ops the `exec-worker` executes — emit `spawn` steps for display 
    Structure names follow the canonical colon form `mcb:<project>_<element>`.
 
    **Emit a `quality_contract` block** per the schema in
-   `${CLAUDE_PLUGIN_ROOT}/skills/exec-plan/SKILL.md`.
+   `$PLUGIN_ROOT/skills/exec-plan/SKILL.md`.
    For transit networks the contract must include:
    - **connectivity** rows for every site pair the network is supposed to
      link. A disconnected segment is the Cape Aurelia "lost some lights on
@@ -141,7 +141,7 @@ Read the file for the step you are on — do not load them all up front:
 | `reference/blueprints.md` | Network and element rendering, and the validation checklist. |
 
 For volume limits, the 64×384×64 structure cap, and tiled fills, follow
-`${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`.
+`$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`.
 
 ## Seams for the orchestrator
 
@@ -177,7 +177,7 @@ orchestrator owns routing and sequences the next leaf:
   `reference/surface-routes.md`.
 - **Verify 1-wide lines after placement** — `block_fill_batch` can silently drop
   a few cells, and one missing rail stalls the cart. Scan-and-patch the layer
-  with `${CLAUDE_PLUGIN_ROOT}/tools/voxel/continuity.py`; see
+  with `$PLUGIN_ROOT/tools/voxel/continuity.py`; see
   `reference/blueprints.md`.
 
 ## Return

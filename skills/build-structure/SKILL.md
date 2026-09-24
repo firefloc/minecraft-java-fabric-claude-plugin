@@ -18,7 +18,7 @@ color: green
 A **specialty orchestrator** for one sited structure or art piece. Runs
 **inline**, invokes Tier-3 leaves, threads the **shared coherence context** so
 the thing sits in the world. Read
-`${CLAUDE_PLUGIN_ROOT}/reference/orchestration/coherence.md` and
+`$PLUGIN_ROOT/reference/orchestration/coherence.md` and
 `workflow-spine.md` first. Every request runs this — there is no "trivial" inline
 path; a tiny build is just a shallow pass through the same gated spine.
 

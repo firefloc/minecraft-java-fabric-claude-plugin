@@ -122,7 +122,7 @@ Read the file for the step you are on — do not load them all up front:
 
 For volume limits, the 64×384×64 structure cap, tiled fills, and ticking
 areas, follow the **`terrain-shape` skill's
-`${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`**.
+`$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`**.
 
 ## The reuse model
 

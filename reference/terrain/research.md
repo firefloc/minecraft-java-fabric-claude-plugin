@@ -32,4 +32,4 @@ the climate->biome mapping. Cite sources in the research note so the recipe is a
 A short research note (in `.minecraft-builder/<project>/`) the terrain-* skill turns into recipe
 parameters: signature features list, strata palette top->bottom, scale/aspect ratio, river pattern,
 biome + species mix. For named natural wonders, `terrain-landmark` maps these onto its primitive
-library (`${CLAUDE_PLUGIN_ROOT}/reference/terrain/primitives.md`).
+library (`$PLUGIN_ROOT/reference/terrain/primitives.md`).

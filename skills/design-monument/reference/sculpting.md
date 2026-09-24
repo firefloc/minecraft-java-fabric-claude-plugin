@@ -48,7 +48,7 @@ Resolve each primitive to a set of `fill`/`set` steps in `plan.toon`.
 
 Author the form as a **parametric voxel model you can render and check before
 placing it** — see `reference/render-verify.md` for the full loop and the
-bundled `voxel` toolkit (`${CLAUDE_PLUGIN_ROOT}/tools/voxel`). The toolkit gives
+bundled `voxel` toolkit (`$PLUGIN_ROOT/tools/voxel`). The toolkit gives
 you the primitives above (ellipsoid, cylinder/cone, `line3d`, `box`, `mirror_x`,
 fractional anchors) on a numpy grid, renders three orthogonal views to PNG, and
 decomposes the verified model into world fills for one `block_fill_batch`. This

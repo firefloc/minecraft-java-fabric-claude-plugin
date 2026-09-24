@@ -61,7 +61,7 @@ that the world is not connected.
 ## The checks
 
 **Start from the harness report.** The build+verify harness (`harness.py verify`,
-see `${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`) already runs the
+see `$PLUGIN_ROOT/reference/execution/build-harness.md`) already runs the
 **mechanical** checks — plan fidelity (`acceptance`) and the whole
 `quality_contract` — and returns PASS / CORRECTIONS NEEDED / FAIL with the exact
 failing samples and routing hints. Your job is the judgement the harness
@@ -128,11 +128,11 @@ This is the check a literal step-by-step verifier misses. Look for:
   feature where every cell matters, sampling a few corners is not enough — a
   single missing cell breaks the whole route, and `block_fill_batch` can
   silently drop a handful of entries from a large batch with no error (see
-  `${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md`). On the Zion rail
+  `$PLUGIN_ROOT/reference/execution/engine-limits.md`). On the Zion rail
   loop, one batch of 1,928 one-block fills left 4 cells unplaced; the cart
   stalled dead at each gap. **Verify with a layer-scan-and-patch, not spot
   checks:** run the continuity verifier
-  `${CLAUDE_PLUGIN_ROOT}/tools/voxel/continuity.py` —
+  `$PLUGIN_ROOT/tools/voxel/continuity.py` —
   `verify_and_patch(intended_cells, dimension, y, shape_of=…, block="minecraft:rail")`
   scans the feature's Y-layer, diffs the intended cell list with
   `find_gaps(intended, present)` (a pure set diff), and `set_state`s the missing
@@ -152,7 +152,7 @@ to diagnose — not to `exec-worker`.
 
 If the recipe declares a **manual kick step** (an initial player trigger
 required to start a self-cycling redstone clock that did not self-start — see
-`${CLAUDE_PLUGIN_ROOT}/skills/system-redstone/reference/setblock-redstone-limits.md`), record the kick step
+`$PLUGIN_ROOT/skills/system-redstone/reference/setblock-redstone-limits.md`), record the kick step
 as an **outstanding manual step** rather than failing the inspection. On Java
 Edition, `block_set_state` with default update flags issues neighbor updates so
 many clocks self-start; but some loop configurations still need an initial
@@ -227,7 +227,7 @@ For any representational or voxelized build, verify it **visually**:
    context. Fallback if that tool is absent: scan the region **paged**
    `block_scan_region` (never a raw full-volume scan — a single underground slab
    of per-block YAML can blow the context limit), rebuild a grid, and render it
-   with the `voxel` toolkit (`${CLAUDE_PLUGIN_ROOT}/tools/voxel`,
+   with the `voxel` toolkit (`$PLUGIN_ROOT/tools/voxel`,
    `render_views`).
 2. **Compare** the render to the reference images and to the design-time render
    `design-monument` approved. Judge silhouette, proportion, palette.

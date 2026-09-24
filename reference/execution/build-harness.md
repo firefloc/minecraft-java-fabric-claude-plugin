@@ -24,7 +24,7 @@ It runs in **Claude Code** (where there's local Bash + Python), is **stdlib-only
 ## CLI
 
 ```sh
-P=${CLAUDE_PLUGIN_ROOT}/tools/builder/harness.py
+P="$PLUGIN_ROOT/tools/builder/harness.py"
 python $P mode                              # dedicated vs single-player (gameTime test)
 python $P selftest                          # write-readiness (forceload→set→read→restore)
 python $P run    <plan.toon> <phase>        # execute a phase (force-load-bracketed)
@@ -71,7 +71,7 @@ This is the machine backstop for the terrain method's first non-negotiable
 or live sculpt, never a static stack of rectangles. A deliberately rectilinear
 build (a plaza, a floor stack) is not classified as terrain and is not affected;
 pass `--force` only if you are certain a flagged phase is not organic terrain.
-See `${CLAUDE_PLUGIN_ROOT}/reference/terrain/non-negotiables.md`.
+See `$PLUGIN_ROOT/reference/terrain/non-negotiables.md`.
 
 ## Terrain ops — the harness-executed landform path
 
@@ -111,7 +111,7 @@ passed an independent verification.
 - **verify** — runs `acceptance` (coordinate→expected-block) and every applicable
   `quality_contract` row (`walkability`, `doors`, `headroom`, `block_mix_ratios`,
   `silhouette`, `edge_irregularity`, `connectivity`) using the sampling algorithms
-  in `${CLAUDE_PLUGIN_ROOT}/skills/exec-inspect/reference/contract-checks.md`, computing PASS / CORRECTIONS NEEDED
+  in `$PLUGIN_ROOT/skills/exec-inspect/reference/contract-checks.md`, computing PASS / CORRECTIONS NEEDED
   / FAIL with the exact failing samples and the routing hint.
 
 ## Force-load envelope (dedicated/unattended servers)
@@ -199,7 +199,7 @@ generated placement script.** Author the form as a parametric model (the
 bundled paced placer:
 
 ```sh
-python ${CLAUDE_PLUGIN_ROOT}/tools/voxel/mcp_place.py place /abs/scratch/field_fills.json
+python "$PLUGIN_ROOT/tools/voxel/mcp_place.py" place /abs/scratch/field_fills.json
 ```
 
 `mcp_place.py` pages `block_fill_batch` under the 8192-entry cap, paces under the
@@ -207,4 +207,4 @@ python ${CLAUDE_PLUGIN_ROOT}/tools/voxel/mcp_place.py place /abs/scratch/field_f
 are the reusable, registry-worthy artifact** — record their location in the
 registry exactly as for a structure template, since the form can be regenerated
 and re-placed from them. A hand-rolled placer must replicate the pacing + 429
-backoff (see `${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md` § Throughput).
+backoff (see `$PLUGIN_ROOT/reference/execution/engine-limits.md` § Throughput).

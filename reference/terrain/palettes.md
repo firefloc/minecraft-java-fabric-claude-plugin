@@ -15,7 +15,7 @@ How to apply a ratio: over the surface region, place the dominant block with
 `block_fill_region`, then convert sub-percentages to other variants — either
 with `replace`-mode fills over sub-regions, or by stamping a single-block
 structure module at the matching `integrity` (see
-`${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`).
+`$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`).
 
 ---
 

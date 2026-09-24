@@ -79,7 +79,7 @@ level_get_biome_at("minecraft:overworld", {x:120,y:64,z:-340})
 → {id:"minecraft:plains", temperature:0.8, downfall:0, hasPrecipitation:true}
 ```
 
-The `id` field maps to a palette in `${CLAUDE_PLUGIN_ROOT}/reference/terrain/palettes.md`.
+The `id` field maps to a palette in `$PLUGIN_ROOT/reference/terrain/palettes.md`.
 `temperature` and `downfall` drive roof pitch (snow load at temp < 0.15) and
 vegetation moisture tolerance. `hasPrecipitation` signals whether rain/snow
 falls at the site.

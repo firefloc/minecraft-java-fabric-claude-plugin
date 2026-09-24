@@ -1,6 +1,6 @@
 # Terrain Toolkit API
 
-The offline Python toolkit at `${CLAUDE_PLUGIN_ROOT}/tools/terrain` (numpy + scipy + Pillow;
+The offline Python toolkit at `$PLUGIN_ROOT/tools/terrain` (numpy + scipy + Pillow;
 optional `opensimplex`, `numba`). Import as `from terrain import ...` with `tools/` on `sys.path`.
 This is the exact surface the terrain-* skills call.
 

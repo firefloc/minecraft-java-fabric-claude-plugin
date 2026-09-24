@@ -44,7 +44,7 @@ Ask, honestly:
 - What estimates (size, materials, phase count) were off, and by how much?
 - What went *right* and is worth doing again deliberately?
 - For a terrain or natural-wonder build, walk the `terrain-landmark` skill's
-  `${CLAUDE_PLUGIN_ROOT}/skills/terrain-landmark/reference/anti-patterns.md` checklist — are all the signature features
+  `$PLUGIN_ROOT/skills/terrain-landmark/reference/anti-patterns.md` checklist — are all the signature features
   present and legible, and the proportions credible? A failed signature gate
   is a correction to make, not a cosmetic note.
 
@@ -85,7 +85,7 @@ build to actually function. Most commonly:
   ring) placed via `block_set_state` may need an initial trigger to start
   ticking if the contraption did not self-start. Java Edition's neighbor-update
   flags mean many clocks self-start, but verify — see
-  `${CLAUDE_PLUGIN_ROOT}/skills/system-redstone/reference/setblock-redstone-limits.md`.
+  `$PLUGIN_ROOT/skills/system-redstone/reference/setblock-redstone-limits.md`.
 - Pressure-plate triggers wired to a hidden mechanism may need the player to
   walk over them once for the `exec-inspect` functional test to pass.
 - Boats, minecarts, and item frames placed via entity_summon or block_set_state
