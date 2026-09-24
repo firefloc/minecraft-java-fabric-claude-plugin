@@ -19,3 +19,5 @@ jobs:
         with:
           node-version: "20"
       - run: node scripts/validate-plugin.mjs
+      # Regression tests for the portability checks themselves (dependency-free).
+      - run: node --test scripts/tests/*.test.mjs

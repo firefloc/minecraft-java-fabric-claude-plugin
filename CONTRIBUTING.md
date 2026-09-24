@@ -21,12 +21,28 @@ no runtime code in the plugin itself. It is made of:
 Every change must pass the validation CI runs. Run it locally with Node 20+:
 
 ```sh
-node scripts/validate-plugin.mjs
+node scripts/validate-plugin.mjs   # manifests, skills, links, host portability
+node --test scripts/tests/*.test.mjs
 ```
 
 It checks that the manifests and `.mcp.json.example` parse, that every skill
-and agent has the required frontmatter, and that skill folder names match the
-`name` in their frontmatter.
+and agent has the required frontmatter, that skill folder names match the
+`name` in their frontmatter, that every reference link resolves, and that the
+three-host portability invariants hold: both connection guides exist, all 30
+skills are present, no shared instruction hardcodes the hyphenated
+`mcp__minecraft-java*` prefix, and no shared instruction executes
+`${CLAUDE_PLUGIN_ROOT}`.
+
+The regression tests cover those portability checks — each one breaks a
+throwaway copy of the repo and asserts the validator fails on it.
+
+The Python toolkits under `tools/` have their own suite. It needs
+`python -m pip install -r tools/requirements.txt` and must be run manually
+(it is not part of the dependency-free CI job):
+
+```sh
+python -m pytest tools/builder/tests tools/terrain/tests tools/voxel/tests
+```
 
 For the full Codex manifest schema, also run the Codex plugin validator when it
 is available in your installation:
@@ -58,6 +74,11 @@ python <codex-install>/skills/.system/plugin-creator/scripts/validate_plugin.py 
 - Keep `minecraft-java` and `minecraft-java-client` as the MCP server names and
   keep the existing Java tool names unchanged. See
   `reference/runtime-portability.md` for host-neutral model and path rules.
+- **Name the server, not the prefix.** Shared instructions say server +
+  native Java tool (`minecraft-java` + `server_get_status`); each host resolves
+  its own prefixed spelling. Use `$PLUGIN_ROOT` for the plugin root in shared
+  examples — `${CLAUDE_PLUGIN_ROOT}` is Claude-only and the validator rejects
+  it outside the host table and the Claude agent definition.
 
 ## Releasing
 
