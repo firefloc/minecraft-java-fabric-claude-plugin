@@ -1,11 +1,12 @@
 # Contributing
 
-Thanks for your interest in improving the Minecraft Java Claude Code + Codex plugin.
+Thanks for your interest in improving the Minecraft Java Claude Code + Codex +
+Hermes Agent plugin.
 
 ## What's in this repo
 
-This is a dual-host plugin — there is no build step for the markdown content and
-no runtime code in the plugin itself. It is made of:
+This is a three-host plugin — there is no build step for the markdown content
+and no runtime code in the plugin itself. It is made of:
 
 - `.claude-plugin/plugin.json` — the plugin manifest.
 - `.claude-plugin/marketplace.json` — the marketplace manifest.
@@ -14,7 +15,10 @@ no runtime code in the plugin itself. It is made of:
 - `agents/codex-*.md` — compact Codex agent adapters.
 - `skills/<name>/SKILL.md` — agent skills, each with YAML frontmatter.
 - `agents/<name>.md` — agents, each with YAML frontmatter.
-- `skills/minecraft-*/` — thin Codex entrypoints that reuse the shared workflow.
+- `skills/minecraft-*/` — thin entrypoints that reuse the shared workflow.
+- `reference/mcp/codex-connection.md`, `reference/mcp/hermes-connection.md` —
+  the per-host connection guides; Hermes has no manifest, it registers this
+  checkout through `skills.external_dirs` and `mcp_servers`.
 
 ## Checks
 
@@ -23,6 +27,13 @@ Every change must pass the validation CI runs. Run it locally with Node 20+:
 ```sh
 node scripts/validate-plugin.mjs   # manifests, skills, links, host portability
 node --test scripts/tests/*.test.mjs
+```
+
+For Hermes Agent, one script covers the static checks and the live ones (it
+SKIPs whatever is not present, so it is safe to run anywhere):
+
+```sh
+python3 scripts/hermes-smoke.py     # add HERMES_HOME=... to target a profile
 ```
 
 It checks that the manifests and `.mcp.json.example` parse, that every skill

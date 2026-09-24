@@ -3,7 +3,7 @@
 // Run: node --test scripts/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cpSync, mkdtempSync, rmSync, appendFileSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, appendFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -86,5 +86,44 @@ test("a missing shared skill from the 30-skill suite fails the build", () => {
     assert.match(output, /terrain-ecology/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// --- the Hermes connection guide must stay true to the code it describes ---
+
+const guidePath = join(root, "reference", "mcp", "hermes-connection.md");
+
+test("the Hermes guide's prefix table matches Hermes's normalization rule", () => {
+  const rows = readFileSync(guidePath, "utf8")
+    .split("\n")
+    .map((l) => l.match(/^\|\s*`([^`]+)`\s*\+\s*`([^`]+)`\s*\|\s*`([^`]+)`\s*\|$/))
+    .filter(Boolean);
+  assert.ok(rows.length >= 4, `expected the server/tool table, found ${rows.length} rows`);
+  for (const [, server, tool, expected] of rows) {
+    const derived = `mcp__${server.replaceAll("-", "_")}__${tool}`;
+    assert.equal(derived, expected, `${server} + ${tool} documented as ${expected}`);
+  }
+});
+
+test("the Hermes guide documents the config keys and an absolute skills path", () => {
+  const body = readFileSync(guidePath, "utf8");
+  assert.match(body, /^\s*external_dirs:/m, "skills.external_dirs block");
+  assert.match(body, /^\s*mcp_servers:/m, "mcp_servers block");
+  assert.match(body, /\/skills\b/m, "an absolute .../skills path");
+  for (const server of ["minecraft-java", "minecraft-java-client"]) {
+    assert.ok(body.includes(server), `guide names the ${server} server`);
+  }
+});
+
+test("the entry skills the Hermes guide promises exist on disk", () => {
+  const body = readFileSync(guidePath, "utf8");
+  // The guide claims these two are the entry skills; the client server name also
+  // matches `minecraft-*`, so match the promise, not the pattern.
+  const entry = body.match(/entry skills\s*\(([^)]*)\)/);
+  assert.ok(entry, "the guide should name its entry skills");
+  const named = [...entry[1].matchAll(/`([^`]+)`/g)].map((m) => m[1]);
+  assert.deepEqual(named.sort(), ["minecraft-builder", "minecraft-mcp-setup"]);
+  for (const name of named) {
+    assert.ok(existsSync(join(root, "skills", name, "SKILL.md")), `skills/${name}/SKILL.md`);
   }
 });
