@@ -22,10 +22,11 @@ Before acting, read:
 - `reference/orchestration/workflow-spine.md` for the canonical phase order and
   gates.
 - `agents/minecraft-builder.md` for the routing table and state/registry rules.
-- The connection guide for the host you are running on — `reference/mcp/codex-connection.md`
-  under Codex; under Claude Code the plugin manifest already registers both
-  servers. Every host's adapter is catalogued in the host table of
-  `reference/runtime-portability.md`.
+- The connection guide for the host you are running on:
+  `reference/mcp/codex-connection.md` (Codex),
+  `reference/mcp/hermes-connection.md` (Hermes Agent). Under Claude Code the
+  plugin manifest already registers both servers. Every host's adapter is
+  catalogued in the host table of `reference/runtime-portability.md`.
 
 ## Runtime adaptation
 

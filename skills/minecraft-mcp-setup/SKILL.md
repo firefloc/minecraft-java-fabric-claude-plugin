@@ -14,8 +14,9 @@ shared `setup-fabric`, `setup-mod`, `setup-server`, and `setup-connect` skills;
 this file supplies only the host-specific connection adapter.
 
 Before changing a local installation, read `reference/runtime-portability.md`
-— its host table catalogues the connection adapter for each host, and the
-per-host guides are `reference/mcp/codex-connection.md` (Codex) plus the
+— its host table catalogues the connection adapter for each host. The per-host
+guides are `reference/mcp/codex-connection.md` (Codex),
+`reference/mcp/hermes-connection.md` (Hermes Agent), and the
 manifest-registered entries under Claude Code.
 
 ## Procedure
