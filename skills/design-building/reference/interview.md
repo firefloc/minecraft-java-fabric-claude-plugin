@@ -1,9 +1,9 @@
 # The adaptive interview
 
-Pin down the design without over-asking. Every branch ends with the **three
-core questions** plus a name. Ask in small grouped batches (use
-`AskUserQuestion` for the multiple-choice ones), skip what is already settled,
-and record answers in `requirements.md`.
+Pin down the design without over-asking. Every branch ends with the **three core
+questions** plus a name. Ask in small grouped batches through the host's question
+interface (the multiple-choice ones use the structured options the host offers), skip
+what is already settled, and record answers in `requirements.md`.
 
 ## Step 1 — classify the target
 

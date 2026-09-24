@@ -1,10 +1,11 @@
 # The adaptive interview
 
-Capture what the user wants without grilling them. The interview **scales with
-the tier**: a starter shack gets ~5 questions, a megabase up to ~25. Ask in
-small grouped batches (use `AskUserQuestion` for the multiple-choice ones), not
-one at a time. Skip anything the request, the survey-site, or an earlier answer
-already settled. Record everything in `requirements.md`.
+Capture what the user wants without grilling them. The interview **scales with the
+tier**: a starter shack gets ~5 questions, a megabase up to ~25. Ask in small grouped
+batches through the host's question interface (the multiple-choice ones use the
+structured options the host offers), not one at a time. Skip anything the request, the
+survey-site, or an earlier answer already settled. Record everything in
+`requirements.md`.
 
 ## Question bank
 

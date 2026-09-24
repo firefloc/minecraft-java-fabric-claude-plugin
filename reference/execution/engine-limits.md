@@ -59,7 +59,7 @@ version/module constraints)`. Read that before guessing.
 
 Separate from the world surface above, the mod's **client** entrypoint serves a
 second MCP endpoint, `minecraft-java-client` (default port 8766), with read-only
-inspection tools under `mcp__minecraft-java-client__*`: `view_capture` (the
+inspection tools: `view_capture` (the
 player's real first-person frame as a PNG — true lighting/sky/textures/entities),
 `sense_crosshair`, `sense_raycast`, `sense_entities`, `sense_screen`, and
 `client_status`. It runs only inside a real, rendered client and is **optional**.
@@ -69,8 +69,8 @@ real-pixel "what does this look like in-game" eye that `exec-inspect` uses (aim 
 player from the `minecraft-java` world server with `entity_teleport` / `tp … yaw
 pitch`, then `view_capture`). When the endpoint is absent, verification falls back
 to `block_render_region` (the synthetic server-side render) plus a user screenshot.
-Never assume it is connected — feature-detect the `mcp__minecraft-java-client__*`
-tools and degrade gracefully.
+Never assume it is connected — feature-detect the `minecraft-java-client`
+server's tools and degrade gracefully.
 
 `view_capture` notes: it defaults to `close_screen: true`, which dismisses the
 pause/Esc menu that opens on window focus loss (so an alt-tabbed client still yields

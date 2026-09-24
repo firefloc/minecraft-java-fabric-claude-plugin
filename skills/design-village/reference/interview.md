@@ -1,10 +1,10 @@
 # The adaptive interview
 
-Capture what the user wants without over-asking. A **hamlet** needs ~6
-questions; a **standard village** the full set. Ask in small grouped batches
-(use `AskUserQuestion` for the multiple-choice ones), skip anything already
-settled by the request or the survey-site, and record answers in
-`requirements.md`.
+Capture what the user wants without over-asking. A **hamlet** needs ~6 questions; a
+**standard village** the full set. Ask in small grouped batches (through the host's
+question interface; the multiple-choice ones use the structured options the host
+offers), skip anything already settled by the request or the survey-site, and record
+answers in `requirements.md`.
 
 ## Question bank
 

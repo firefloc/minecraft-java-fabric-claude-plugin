@@ -1,8 +1,9 @@
 # The adaptive interview
 
-Pin down the garden without over-asking. Ask in small grouped batches (use
-`AskUserQuestion` for the multiple-choice ones), skip what is already settled
-by the request or a delegating skill, and record answers in `requirements.md`.
+Pin down the garden without over-asking. Ask in small grouped batches through the host's
+question interface (the multiple-choice ones use the structured options the host
+offers), skip what is already settled by the request or a delegating skill, and record
+answers in `requirements.md`.
 
 ## Question bank
 

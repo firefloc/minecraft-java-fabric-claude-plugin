@@ -1,8 +1,9 @@
 # The adaptive interview
 
-Capture the city design without over-asking. Ask in small grouped batches (use
-`AskUserQuestion` for the multiple-choice ones), skip what the request or the
-survey-site already settled, and record answers in `requirements.md`.
+Capture the city design without over-asking. Ask in small grouped batches through the
+host's question interface (the multiple-choice ones use the structured options the host
+offers), skip what the request or the survey-site already settled, and record answers in
+`requirements.md`.
 
 ## Question bank
 

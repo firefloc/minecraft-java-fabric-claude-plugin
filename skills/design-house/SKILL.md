@@ -61,7 +61,8 @@ the user to run the `minecraft-mcp-setup` agent.
 2. **Interview, adaptively.** Run the question set from
    `reference/interview.md` sized to the tier (≈5 questions for a starter,
    up to ≈25 for a megabase). Ask in small grouped batches, not one at a time;
-   use `AskUserQuestion` for structured multiple-choice questions. Branch — if
+   ask through the active host's question interface, using structured
+   multiple-choice options where the host supports them. Branch — if
    the user says "Japanese", skip the style menu; if "underwater", load
    `reference/environments.md` and ask the conduit follow-ups. Record answers
    in `.minecraft-builder/<project>/requirements.md`.

@@ -25,10 +25,9 @@ Before starting, get from the user:
 
 > **Name the server `minecraft-java`.** The builder agent and skills in this
 > plugin expect the MCP tools under that server name. Use exactly
-> `minecraft-java` as the server name below — each host then resolves its own
-> prefixed spelling (`mcp__minecraft-java__server_get_status` under Claude Code
-> and Codex, `mcp__minecraft_java__server_get_status` under Hermes Agent; see
-> `reference/runtime-portability.md`).
+> `minecraft-java` as the server name below — whatever prefix the host puts in
+> front of the discovered tool name is the host's business (see the host table
+> in `reference/runtime-portability.md`).
 
 ## One or two servers? (world + inspection)
 
