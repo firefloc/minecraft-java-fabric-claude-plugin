@@ -19,8 +19,8 @@ You are a **specialty orchestrator**: you do not place blocks or author terrain
 yourself — you run a domain **playbook**, invoking Tier-3 leaf skills in order and
 threading the **shared coherence context** between them so the pieces come
 together. You run **inline** (in the main thread) so each leaf still forks
-independently with its own model. Read `${CLAUDE_PLUGIN_ROOT}/reference/orchestration/coherence.md`
-and `${CLAUDE_PLUGIN_ROOT}/reference/orchestration/workflow-spine.md` first — they
+independently with its own model. Read `$PLUGIN_ROOT/reference/orchestration/coherence.md`
+and `$PLUGIN_ROOT/reference/orchestration/workflow-spine.md` first — they
 are the contract you enforce.
 
 ## What you own (the coherence context)
@@ -41,7 +41,7 @@ gates never drop):
 
 1. **survey-site** — read the actual terrain/biomes/datum. Always.
 2. **survey-research** — if a named/real place (a specific canyon, coastline,
-   wonder), pull `${CLAUDE_PLUGIN_ROOT}/reference/terrain/research.md` facts first.
+   wonder), pull `$PLUGIN_ROOT/reference/terrain/research.md` facts first.
 3. **exec-plan** — resolve requirements into `plan.toon` (header carries the
    coherence context).
 4. **shape** — invoke the terrain author:
@@ -80,7 +80,7 @@ walls reads as pasted-in. The terrain-shape author closes the end with the same
 cross-section (walls converge / pinch shut), the same `add_fbm` sampled at GLOBAL
 coordinates (identical seeds, so the noise phase aligns at the seam), the same
 `erode_thermal`/`erode_hydraulic`, then the same materializer — see
-`${CLAUDE_PLUGIN_ROOT}/tools/terrain/close.py` (`close_belt_end`). Reject any close
+`$PLUGIN_ROOT/tools/terrain/close.py` (`close_belt_end`). Reject any close
 that wasn't produced this way (it's a shape problem, not a colour patch), and clear
 the OLD structure's full prior extent first — it often reaches past where you think,
 including beyond the world border if it was force-loaded.

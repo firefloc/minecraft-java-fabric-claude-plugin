@@ -19,7 +19,7 @@ recipe (sampler graph, JSON)
   -> emit                          plan.toon terrain phases (columns / strata / fillbiome / scatter)
 ```
 
-All of this runs in `${CLAUDE_PLUGIN_ROOT}/tools/terrain` (numpy + scipy + Pillow). The agent writes
+All of this runs in `$PLUGIN_ROOT/tools/terrain` (numpy + scipy + Pillow). The agent writes
 a recipe, calls `emit.emit_world(recipe)`, render-verifies the PNGs, and hands the payloads to
 `exec-worker` / MCP tools.
 
@@ -53,7 +53,7 @@ a recipe, calls `emit.emit_world(recipe)`, render-verifies the PNGs, and hands t
 ## What each terrain-* skill owns
 
 - **terrain-shape** — naturalistic terrain (mountains, valleys, rivers, coasts) as a recipe.
-- **terrain-landmark** — recognizable wonders, composing 2-4 signature primitives (`${CLAUDE_PLUGIN_ROOT}/reference/terrain/primitives.md`).
+- **terrain-landmark** — recognizable wonders, composing 2-4 signature primitives (`$PLUGIN_ROOT/reference/terrain/primitives.md`).
 - **terrain-ecology** — the planting/biome decision over a finished heightfield (`ecology.md`).
 - **terrain-integrate** — grounding a build into the world (`integration.md`).
 - **terrain-cave** — designed subterranean space (`caves.md`).

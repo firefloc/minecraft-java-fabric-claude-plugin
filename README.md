@@ -2,10 +2,11 @@
   <img src="docs/images/logo.png" width="200" alt="Minecraft Java Fabric MCP — Claude plugin logo">
 </p>
 
-# Minecraft Java — Claude Code + Codex Plugin
+# Minecraft Java — Claude Code + Codex + Hermes Agent Plugin
 
-A shared [Claude Code](https://code.claude.com) and [OpenAI Codex](https://openai.com/codex/)
-plugin that gives an agent **skills** and a **builder workflow** for driving a
+A shared [Claude Code](https://code.claude.com), [OpenAI Codex](https://openai.com/codex/)
+and [Hermes Agent](https://hermes-agent.nousresearch.com/docs) plugin that gives an
+agent **skills** and a **builder workflow** for driving a
 live Minecraft Java Edition world through the
 [`minecraft-java-fabric-mcp-server`](https://github.com/chapmanjw/minecraft-java-fabric-mcp-server)
 — a Fabric mod that embeds an MCP server inside Minecraft.
@@ -33,7 +34,7 @@ It does two things:
 1. **Guided setup** — skills and an agent that walk you, step by step, through
    standing up the whole stack: Minecraft Java with the Fabric loader, the MCP
    mod and its Fabric API dependency, the mod's configuration, and the
-   connection to Claude Code or Codex.
+   connection to your agent host (Claude Code, Codex, or Hermes Agent).
 2. **Building in the world** — a `minecraft-builder` agent that routes each
    request to one of four `build-*` orchestrators, each of which sequences a set
    of model-tuned leaf skills — survey, research, plan, blueprint, build, verify,
@@ -42,9 +43,9 @@ It does two things:
 ## The stack
 
 This plugin is the agent-facing piece of a two-repository system. It supports
-both Claude Code and Codex; the MCP server is **embedded in the Fabric mod** and
-runs inside Minecraft itself — there is no separate server process and no
-behavior pack.
+Claude Code, Codex and Hermes Agent; the MCP server is **embedded in the Fabric
+mod** and runs inside Minecraft itself — there is no separate server process and
+no behavior pack.
 
 | Repository | Role |
 | ---------- | ---- |
@@ -143,6 +144,36 @@ The first entrypoint preserves the complete
 **survey → research → plan → blueprint/build → integrate → inspect → register →
 reflect** workflow. The second runs the existing four setup phases in order.
 
+## Install with Hermes Agent
+
+Hermes Agent loads this repository's `skills/` tree directly — nothing is
+copied, so a `git pull` updates the skills. Point the profile config
+(`~/.hermes/config.yaml`) at the checkout and register the world server:
+
+```yaml
+skills:
+  external_dirs:
+    - /absolute/path/to/this/checkout/skills
+mcp_servers:
+  minecraft-java:
+    url: http://127.0.0.1:8765/mcp
+```
+
+Add `minecraft-java-client` (`http://127.0.0.1:8766/mcp`) only when a real
+rendered client is running. Then verify:
+
+```sh
+hermes skills list --source local   # expect all 30 skills
+hermes mcp test minecraft-java
+```
+
+Hermes normalizes the hyphens in the server names, so the tools appear as
+`mcp__minecraft_java__server_get_status` and
+`mcp__minecraft_java_client__view_capture`. Full guide, including the remote /
+authenticated setup: [`reference/mcp/hermes-connection.md`](reference/mcp/hermes-connection.md).
+Ask it in plain language — “build a lakeside village near the nearest player” —
+or invoke `minecraft-builder` / `minecraft-mcp-setup` by name.
+
 ## Setup skills
 
 The four setup skills are meant to be run **in order**. Each one ends by
@@ -155,9 +186,9 @@ localhost (no token, no firewall changes); each skill also covers the
 | `setup-fabric` | 1 | Install Minecraft Java Edition and the Fabric loader — a single-player client or a headless dedicated server. |
 | `setup-mod` | 2 | Download the MCP mod jar and the matching Fabric API jar and install both into the `mods/` folder. |
 | `setup-server` | 3 | Configure the mod's `config.json`, launch, and verify the embedded MCP server is listening (`/healthz`); capture the bearer token for remote setups. |
-| `setup-connect` | 4 | Register the MCP server with Claude Code or Codex and verify with a live tool call. |
+| `setup-connect` | 4 | Register the MCP server with the active host — Claude Code / Claude Desktop, Codex, or Hermes Agent — and verify with a live tool call. |
 
-To start a fresh setup, ask Claude Code or Codex to set up Minecraft Java for
+To start a fresh setup, ask your agent host to set up Minecraft Java for
 MCP — the host adapter triggers automatically — or invoke the shared setup skill
 explicitly in Claude Code:
 
@@ -174,8 +205,9 @@ that sequence the Tier-3 leaf skills and thread one shared coherence context (on
 survey, one terrain recipe, one palette, one biome plan, one integration pass) so
 a build holds together. The leaves are single-purpose specialists, assigned by
 logical role: `lead`, `specialist`, or `executor`. Claude retains its historical
-model metadata for compatibility; Codex uses the configured model and native
-subagents when available. A leaf never hands off to a sibling; it returns its
+model metadata for compatibility; Codex and Hermes use the configured model and
+native subagents or delegation when available, and run the phases sequentially
+when it is not. A leaf never hands off to a sibling; it returns its
 result to the orchestrator, which sequences the next leaf. There is no trivial
 path: every request runs the full gated spine, depth-scaled. The repository now
 contains the original shared skills plus two host entry skills.
@@ -263,8 +295,9 @@ any build — e.g. *"Build a lakeside village near the nearest player."*
 
 Use the individual `/minecraft-java:*` skills directly in Claude Code if you'd
 rather drive one step yourself. In Codex, the corresponding entrypoints are
-`$minecraft-java:minecraft-builder` and `$minecraft-java:minecraft-mcp-setup`;
-the underlying leaf skills keep their shared names and instructions.
+`$minecraft-java:minecraft-builder` and `$minecraft-java:minecraft-mcp-setup`; in
+Hermes Agent, invoke the `minecraft-builder` / `minecraft-mcp-setup` skills by
+name. The underlying leaf skills keep their shared names and instructions.
 
 ## State model
 
@@ -293,6 +326,9 @@ MCP server for the user's chosen endpoint and posture. The Codex manifest
 includes the safe no-auth localhost defaults, while remote/authenticated users
 should configure their endpoint and bearer-token environment variable as shown
 in [`reference/mcp/codex-connection.md`](reference/mcp/codex-connection.md).
+Hermes Agent registers the same endpoints through `mcp_servers` in its profile
+config — see
+[`reference/mcp/hermes-connection.md`](reference/mcp/hermes-connection.md).
 
 For a **single-player** install the mod listens on `http://127.0.0.1:8765/mcp`
 with no authentication — just the URL is needed. For a **dedicated/remote**
@@ -313,7 +349,9 @@ the real-client frame for in-game verification when it's connected.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for conventions and how to validate
-changes, [CHANGELOG.md](CHANGELOG.md) for release history, and
+changes, [docs/portability-smoke-test.md](docs/portability-smoke-test.md) for the
+per-host verification matrix and its current PASS / NON TESTÉ state,
+[CHANGELOG.md](CHANGELOG.md) for release history, and
 [SECURITY.md](SECURITY.md) to report a vulnerability.
 
 ## License

@@ -98,7 +98,7 @@ Then:
 
 For the full limit detail (including `command_timeout_ms`, `rate_limit_rpm`,
 and chunk-loading constraints), follow
-`${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`.
+`$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`.
 
 ## Process
 
@@ -129,7 +129,7 @@ and chunk-loading constraints), follow
     Structure names follow the canonical colon form `mcb:<project>_<element>`.
 
     **Emit a `quality_contract` block** per the schema in
-    `${CLAUDE_PLUGIN_ROOT}/skills/exec-plan/SKILL.md`.
+    `$PLUGIN_ROOT/skills/exec-plan/SKILL.md`.
     Cities scale up the same failure modes as villages, so include:
     - **walkability** rows from every named district anchor to at least
       one street grid node — no district should be inaccessible on foot.

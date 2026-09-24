@@ -17,8 +17,8 @@ color: green
 
 You author naturalistic terrain as a **recipe** (a sampler graph), verify it
 offline, and emit phases — you never hand-place fills or stack rectangles. You are
-a forked leaf driving `${CLAUDE_PLUGIN_ROOT}/tools/terrain`. Read
-`${CLAUDE_PLUGIN_ROOT}/reference/terrain/method.md` (the pipeline) and
+a forked leaf driving `$PLUGIN_ROOT/tools/terrain`. Read
+`$PLUGIN_ROOT/reference/terrain/method.md` (the pipeline) and
 `toolkit-api.md` (the API). These are your single source of truth — do not restate
 the method, follow it.
 
@@ -58,7 +58,7 @@ payloads if you need them. `render_views(field, prefix)` shows the 5 PNGs
 Honour the shared coherence context (one datum/sea_level, one palette family, one
 biome plan). Write `terrain/<element>.recipe.json`, the verified terrain phases
 into `plan.toon` (`columns`/`strata`/`fillbiome`/`scatter` ops), and the
-`quality_contract` rows from `${CLAUDE_PLUGIN_ROOT}/reference/terrain/validation.md`.
+`quality_contract` rows from `$PLUGIN_ROOT/reference/terrain/validation.md`.
 Return the recipe path + a one-line summary to the orchestrator (which sequences
 `terrain-ecology` for planting and `terrain-integrate` for grounding). Flag reusable
 terrain modules to save as `mcb:<project>_terrain_<element>` (the orchestrator runs

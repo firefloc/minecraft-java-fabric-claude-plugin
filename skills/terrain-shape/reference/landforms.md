@@ -11,7 +11,7 @@ rectangular fills. This is the technique that took Cape Aurelia from a flat
 ziggurat to "1000× better" in one rebuild.
 
 **Use the `terrain` toolkit, and render-verify it offline before placing
-anything** — `${CLAUDE_PLUGIN_ROOT}/tools/terrain` (numpy + Pillow; the 2.5-D
+anything** — `$PLUGIN_ROOT/tools/terrain` (numpy + Pillow; the 2.5-D
 counterpart of the `voxel` toolkit). You cannot see the world, and a stack of
 fills *looks* fine in a plan but builds a ziggurat. Authoring the heightfield in
 the toolkit lets you **render it and catch that in seconds**, not after a
@@ -22,7 +22,7 @@ demolition. Read `tools/README.md` for the full API. The loop:
 
    ```python
    import os, sys
-   sys.path.insert(0, os.path.join(os.environ["CLAUDE_PLUGIN_ROOT"], "tools"))
+   sys.path.insert(0, os.path.join(os.environ["PLUGIN_ROOT"], "tools"))
    from terrain import HeightField, TerrainLayers, render_views, write_terrain_fills
 
    hf = (HeightField(nx, nz, sea_level=62)
@@ -69,7 +69,7 @@ demolition. Read `tools/README.md` for the full API. The loop:
    call:
 
    ```sh
-   python ${CLAUDE_PLUGIN_ROOT}/tools/voxel/mcp_place.py place /abs/scratch/site_fills.json
+   python "$PLUGIN_ROOT/tools/voxel/mcp_place.py" place /abs/scratch/site_fills.json
    ```
 
    The heights are absolute world Y, so `sea_level=62` and real coordinates work
@@ -79,7 +79,7 @@ demolition. Read `tools/README.md` for the full API. The loop:
    palette and the server materialises the columns in one pass, with **no
    8192-entry cap** and no client-side box decomposition (tile to ≤65,536
    columns). Probe `tools/list` first; **fall back** to the `mcp_place.py` /
-   `block_fill_batch` path above on older mods. See `${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md`
+   `block_fill_batch` path above on older mods. See `$PLUGIN_ROOT/reference/execution/engine-limits.md`
    § Terrain helpers.
 
    **"Generated offline" means the *heightmap math* runs offline, not via a
@@ -124,7 +124,7 @@ The `terrain` toolkit ships the primitive:
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.join(os.environ["CLAUDE_PLUGIN_ROOT"], "tools"))
+sys.path.insert(0, os.path.join(os.environ["PLUGIN_ROOT"], "tools"))
 from terrain import HeightField, Centerline, render_views
 
 loop = Centerline([(20,20),(140,20),(140,108),(20,108)], closed=True)   # the rail ring
@@ -187,7 +187,7 @@ Hm = np.maximum(H, hf.h)                     # keep tall existing walls, raise t
 # then re-run the SAME materializer over the end window
 ```
 
-Don't re-implement this per build — `${CLAUDE_PLUGIN_ROOT}/tools/terrain/close.py`
+Don't re-implement this per build — `$PLUGIN_ROOT/tools/terrain/close.py`
 ships `close_belt_end(field, centerline, keypoints, end, ...)` (also
 `from terrain import close_belt_end`), which reuses the same fbm (identical seeds,
 global grid coords) and the same thermal/hydraulic erosion via a caller-supplied

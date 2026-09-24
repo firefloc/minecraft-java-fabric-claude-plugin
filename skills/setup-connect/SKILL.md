@@ -2,13 +2,14 @@
 name: setup-connect
 description: >-
   Step 4 of 4 of the Minecraft Java MCP setup. Register the running
-  minecraft-java MCP server (the Fabric mod) with Claude (Claude Code or Claude
-  Desktop) so the Java world tools become available, then verify the connection
-  with a live test call. Use when the user has the MCP server running and needs
-  to connect Claude to their Minecraft world.
+  minecraft-java MCP server (the Fabric mod) with the active host — Claude Code
+  or Claude Desktop, Codex, or Hermes Agent — so the Java world tools become
+  available, then verify the connection with a live test call. Use when the user
+  has the MCP server running and needs to connect their agent host to their
+  Minecraft world.
 ---
 
-# Connect Claude to the Minecraft world (Step 4 of 4)
+# Connect your agent host to the Minecraft world (Step 4 of 4)
 
 This is the **final** phase of the Minecraft Java MCP setup. It assumes Phase 3
 (`setup-server`) is done: the mod is running and `/healthz` returns OK.
@@ -23,8 +24,10 @@ Before starting, get from the user:
   in Phase 3). A single-player localhost setup has **no token**.
 
 > **Name the server `minecraft-java`.** The builder agent and skills in this
-> plugin expect MCP tools under that name (`mcp__minecraft-java__*`). Use
-> exactly `minecraft-java` as the server name below.
+> plugin expect the MCP tools under that server name. Use exactly
+> `minecraft-java` as the server name below — whatever prefix the host puts in
+> front of the discovered tool name is the host's business (see the host table
+> in `reference/runtime-portability.md`).
 
 ## One or two servers? (world + inspection)
 
@@ -41,7 +44,8 @@ user's setup:
   `client_status` read client-side perception. Runs **inside a real, rendered
   client**. Default `http://localhost:8766/mcp`. Connect this **only when a real
   client is running** (see patterns below). Name it **exactly
-  `minecraft-java-client`** — `exec-inspect` looks for `mcp__minecraft-java-client__*`.
+  `minecraft-java-client`** — `exec-inspect` resolves that server's prefixed
+  tools from whatever the active host discovered.
 
 The three supported patterns:
 
@@ -56,10 +60,15 @@ real-pixel "what does this look like in-game" check that `exec-inspect` uses whe
 present (and falls back to the synthetic `block_render_region` + a user screenshot
 when absent).
 
-Ask the user which Claude they're connecting: **Claude Code** (CLI / IDE
-extension) or **Claude Desktop**. Follow the matching section.
+Ask the user which agent host they are connecting, then follow the matching
+branch below. Only the branch's own commands are host-specific; the verification
+section afterwards is shared.
 
-## Connecting Claude Code
+- **Claude branch** — Claude Code (CLI / IDE extension) or Claude Desktop.
+- **Codex branch** — see `reference/mcp/codex-connection.md`.
+- **Hermes Agent branch** — see `reference/mcp/hermes-connection.md`.
+
+## Branch A — Claude Code
 
 The mod speaks the **Streamable HTTP** transport, which Claude Code supports
 natively. Use `claude mcp add`.
@@ -115,7 +124,7 @@ After adding it, the user restarts Claude Code (or reloads the window in the
 IDE extension). Confirm the server shows up with `claude mcp list` or `/mcp` —
 it should report `minecraft-java` as connected.
 
-## Connecting Claude Desktop
+## Branch B — Claude Desktop
 
 Two options:
 
@@ -168,6 +177,25 @@ The token goes through the `AUTH_HEADER` env var so its space (`Bearer <space>to
 isn't mangled by argument parsing. Then **fully restart** Claude Desktop — the
 tools appear under the tools (🔌) menu once it reconnects.
 
+## Branch C — Codex
+
+- Connection procedure, defaults and the remote/authenticated form:
+  `reference/mcp/codex-connection.md`.
+- Codex plugins provide the default local HTTP entries from
+  `.codex-plugin/plugin.json`; a remote or authenticated endpoint uses a bearer
+  token that stays in an environment variable.
+- Confirm with the host's own status command, then run the shared verification
+  below.
+
+## Branch D — Hermes Agent
+
+- Full guide: `reference/mcp/hermes-connection.md` (skill discovery through
+  `skills.external_dirs`, `mcp_servers` entries, remote/authenticated form).
+- Confirm skill discovery with `hermes skills list --source local` — all 30.
+- Confirm the servers with `hermes mcp list` and `hermes mcp test minecraft-java`,
+  then run the shared verification below. Hermes prefixes the tools as
+  `mcp__minecraft_java__*` and `mcp__minecraft_java_client__*`.
+
 ## Verify the connection
 
 A registered server isn't a working one — confirm with a **live call**:
@@ -176,17 +204,18 @@ A registered server isn't a working one — confirm with a **live call**:
    many tools act relative to players or the world).
 2. Call **`server_get_status`** — it needs no arguments and no player. A
    successful response (Minecraft version, TPS, online player count, loaded
-   dimensions) means the chain is up: Claude → MCP server (the mod) → world.
-   Then `level_get_info` with `dimension: "minecraft:overworld"` confirms
-   world-level reads work.
+   dimensions) means the chain is up: the active host → MCP server (the mod) →
+   world. Then `level_get_info` with `dimension: "minecraft:overworld"`
+   confirms world-level reads work.
 3. As a visible smoke test, run `command_execute` with `say MCP connected` and
    confirm the user sees the message in the in-game chat.
 4. **If you connected `minecraft-java-client`:** call **`client_status`** — it
    needs no arguments and confirms the inspection client is in a world (it
    reports `in_game`, position, facing). Then **`view_capture`** returns the
-   player's first-person frame as an image you can `Read`. A successful capture
-   means the real-pixel inspection path is live. (If `client_status` reports
-   `in_game: false`, the client is on the title screen — join a world and retry.)
+   player's first-person frame as an image the host can read. A successful
+   capture means the real-pixel inspection path is live. (If `client_status`
+   reports `in_game: false`, the client is on the title screen — join a world
+   and retry.)
    `view_capture` defaults to `close_screen: true`, so it dismisses the pause/Esc
    menu that opens when you alt-tab and still returns a clean world frame; to stop
    that menu opening on focus loss at all, toggle Pause on Lost Focus off in-game
@@ -199,7 +228,7 @@ If a call fails:
   in the header. (`/healthz` works without auth, so a 401 on tool calls but a
   healthy `/healthz` points squarely at the token.)
 - **Connection refused / timeout** — the mod isn't running (no world loaded /
-  server down), wrong host:port, or a firewall between Claude and the host.
+  server down), wrong host:port, or a firewall between the host and the server.
 - **Tools connect but calls error about no world / no player** — load a world
   and have a player join, then retry.
 
@@ -207,14 +236,15 @@ If a call fails:
 
 Once `server_get_status` returns cleanly, the setup is complete:
 
-- [ ] `minecraft-java` MCP server registered with Claude.
+- [ ] `minecraft-java` MCP server registered with the active host.
 - [ ] Java tools (`level_*`, `block_*`, `entity_*`, …) visible.
 - [ ] A live test call succeeded against the world.
 - [ ] *(if a client is running)* `minecraft-java-client` registered; `client_status`
-      and `view_capture` succeeded — Claude can SEE the world as a player.
+      and `view_capture` succeeded — the host can SEE the world as a player.
+      Without a rendered client, record the setup as **server-only inspection**.
 
 Tell the user they're done — all four phases are complete. Suggest next steps:
 
 - Try a simple prompt: *"What's the time and weather? Set it to clear midday."*
 - Try building: *"Build a small stone-brick house near the nearest player."*
-  Claude works through the Java MCP tools to plan and place blocks in the world.
+  The host works through the Java MCP tools to plan and place blocks in the world.

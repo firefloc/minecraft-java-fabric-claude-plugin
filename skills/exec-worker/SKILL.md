@@ -90,7 +90,7 @@ after another — that floods context and is the slow path. Instead run the
 server and returns one digest:
 
 ```sh
-python ${CLAUDE_PLUGIN_ROOT}/tools/builder/harness.py build <plan.toon> <phase>
+python "$PLUGIN_ROOT/tools/builder/harness.py" build <plan.toon> <phase>
 ```
 
 - `build` = `run` (execute the phase's steps, **force-load-bracketed** and
@@ -98,7 +98,7 @@ python ${CLAUDE_PLUGIN_ROOT}/tools/builder/harness.py build <plan.toon> <phase>
   `acceptance` + `quality_contract` checks). Use `run` alone if the orchestrator
   wants verification handled separately by `exec-inspect`.
 - It is **stdlib-only** and reads the server URL/auth from `~/.claude.json`, like
-  `voxel/mcp_place.py`. See `${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`.
+  `voxel/mcp_place.py`. See `$PLUGIN_ROOT/reference/execution/build-harness.md`.
 - **Read the exit code and digest.** Exit `0` = every step ran and every check
   passed → report the digest and advance. Exit `1` = a step failed, a write hit a
   **force-load miss** (`blocks_changed: 0` on a write that should change blocks),

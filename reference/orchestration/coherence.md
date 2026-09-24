@@ -55,9 +55,9 @@ every leaf's result.
   non-mechanism chunks. The orchestrator re-asserts the permanent set with `forceload add` as the
   LAST op of any force-toggling phase (run / build / freshness), which the harness does for you when
   the set is declared as a top-level `protect:` block in `plan.toon` (rows of `corner_a corner_b` as
-  `x z`) — see `${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`. The mechanics of the
+  `x z`) — see `$PLUGIN_ROOT/reference/execution/build-harness.md`. The mechanics of the
   force-load cap, banding, and the `forceload remove all` footgun live once in
-  `${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md`.
+  `$PLUGIN_ROOT/reference/execution/engine-limits.md`.
 
 If any reconciliation fails, fix the owning leaf and re-run it — do not paper over a shape/seam
 problem with a colour pass (the parks-grand-loop lesson: a seam is a shape problem).

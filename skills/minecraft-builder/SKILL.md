@@ -8,34 +8,45 @@ description: >-
   register, and reflect flow.
 ---
 
-# Minecraft Builder for Codex
+# Minecraft Builder — shared entrypoint (Claude Code, Codex, Hermes Agent)
 
-This is the Codex entrypoint for the existing `minecraft-builder` workflow. The
-Claude Code agent at `agents/minecraft-builder.md` remains the detailed source
-of truth; reuse its routing, state model, gates, and recovery rules instead of
-copying them into a second implementation.
+This is the host-neutral entrypoint for the existing `minecraft-builder`
+workflow. The Claude Code agent at `agents/minecraft-builder.md` remains the
+detailed source of truth; reuse its routing, state model, gates, and recovery
+rules instead of copying them into a second implementation.
 
 Before acting, read:
 
-- `reference/runtime-portability.md` for path, model-role, and delegation rules.
+- `reference/runtime-portability.md` for the host table, path, model-role, and
+  delegation rules.
 - `reference/orchestration/workflow-spine.md` for the canonical phase order and
   gates.
 - `agents/minecraft-builder.md` for the routing table and state/registry rules.
+- The connection guide for the host you are running on:
+  `reference/mcp/codex-connection.md` (Codex),
+  `reference/mcp/hermes-connection.md` (Hermes Agent). Under Claude Code the
+  plugin manifest already registers both servers. Every host's adapter is
+  catalogued in the host table of `reference/runtime-portability.md`.
 
 ## Runtime adaptation
 
-- Ignore Claude-only YAML metadata such as `model`, `effort`, `color`, and
-  `context`. Use the current Codex model and reasoning setting. Map the source
-  file's inline/fork intent to the current conversation or a native Codex
-  subagent when one is available; if delegation is unavailable, run the same
+- Ignore host-specific YAML metadata such as `model`, `effort`, `color`, and
+  `context`. Use the active host's configured model and reasoning setting. Map
+  the source file's inline/fork intent to the current conversation or a native
+  sub-agent when one is available; if delegation is unavailable, run the same
   phase sequentially and keep every gate.
 - Resolve references from the installed plugin root (the directory containing
-  `.codex-plugin/plugin.json`) or from the repository checkout. Never pass a
-  Claude-only path token literally to a shell.
+  `.claude-plugin/plugin.json` or `.codex-plugin/plugin.json`) or from the
+  repository checkout, and quote the path. Never pass a Claude-only path token
+  literally to a shell outside an explicitly Claude-labelled instruction.
 - Use the MCP servers by their unchanged names: `minecraft-java` for world
   reads/writes and `minecraft-java-client` for optional rendered-player
-  inspection. Use the existing Java tool names, including
-  `server_get_status`, `view_capture`, `sense_*`, and `client_status`.
+  inspection. Use the existing Java tool names — `server_get_status`,
+  `view_capture`, `sense_*`, `client_status` — and let the host resolve its own
+  prefixed spelling (see the host table in `reference/runtime-portability.md`).
+- When information the build genuinely needs is missing, ask one short question
+  through the active interface. Never call a tool the active host does not
+  provide by name.
 
 ## Required flow
 
@@ -56,5 +67,6 @@ Before acting, read:
    server-only rather than pretending a visual check happened.
 
 Natural requests such as “build a lakeside village near the nearest player”
-should enter this skill automatically. Users can also invoke it explicitly as
-`$minecraft-java:minecraft-builder`.
+should enter this skill automatically. Explicit invocation is host-specific:
+`$minecraft-java:minecraft-builder` under Codex, the `minecraft-builder` skill
+name under Hermes Agent, and the builder agent under Claude Code.

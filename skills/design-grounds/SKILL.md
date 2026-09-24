@@ -98,7 +98,7 @@ the user to run the `minecraft-mcp-setup` agent.
    `mcb:<project>_<element>`.
 
    **Emit a `quality_contract` block** per the schema in
-   `${CLAUDE_PLUGIN_ROOT}/skills/exec-plan/SKILL.md`.
+   `$PLUGIN_ROOT/skills/exec-plan/SKILL.md`.
    For designed outdoor spaces the contract should include:
    - **walkability** rows for every named path (gate → fountain, parterre
      → bench, axis A → axis B). A garden whose paths can't be walked is
@@ -127,7 +127,7 @@ Read the file for the step you are on — do not load them all up front:
 
 For volume limits, the 64×384×64 structure cap, tiled fills, and ticking
 areas, follow the `terrain-shape` skill's
-`${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`.
+`$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`.
 
 ## Dependency seams
 

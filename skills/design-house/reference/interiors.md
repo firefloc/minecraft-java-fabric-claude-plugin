@@ -66,7 +66,7 @@ reading as an empty shell.
   sapling with `block_set_state` and apply bone meal via a command. Prefer the
   sapling + bone-meal path for organic, varied results. Mix flower types and
   planters; keep paths and bushes irregular (see also the shared terrain
-  core `${CLAUDE_PLUGIN_ROOT}/reference/terrain/weathering.md`).
+  core `$PLUGIN_ROOT/reference/terrain/weathering.md`).
 
 ---
 

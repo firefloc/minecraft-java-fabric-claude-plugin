@@ -19,7 +19,7 @@ You compose recognizable natural wonders. Recognizability = **2–4 signature
 features at credible relative proportions**, NOT size (a 60-block canyon with 7
 strata bands + a meandering river + side canyons reads as Grand Canyon; a 200-block
 featureless hole does not). You are a forked leaf authoring a recipe. Read
-`${CLAUDE_PLUGIN_ROOT}/reference/terrain/method.md`, `primitives.md` (the formation
+`$PLUGIN_ROOT/reference/terrain/method.md`, `primitives.md` (the formation
 library as sampler-graph fragments), `palettes.md`, and (for a named wonder)
 `research.md` via `survey-research`.
 

@@ -33,14 +33,14 @@ just one:
 
 ## The toolkit
 
-Bundled at `${CLAUDE_PLUGIN_ROOT}/tools/voxel` (numpy + Pillow; if a run
+Bundled at `$PLUGIN_ROOT/tools/voxel` (numpy + Pillow; if a run
 reports a missing module, tell the user to
 `python -m pip install -r tools/requirements.txt`). Read `tools/README.md` for
 the full API. The shape of an authoring script:
 
 ```python
 import os, sys
-sys.path.insert(0, os.path.join(os.environ["CLAUDE_PLUGIN_ROOT"], "tools"))
+sys.path.insert(0, os.path.join(os.environ["PLUGIN_ROOT"], "tools"))
 from voxel import Palette, VoxelModel, render_views, write_fills_json
 
 pal = Palette.building()                  # concretes, stone, wood, glass, copper…
@@ -79,7 +79,7 @@ tool call reliably (the #1 friction of a long figurative session). Pipe the JSON
 straight to the local server instead:
 
 ```sh
-python ${CLAUDE_PLUGIN_ROOT}/tools/voxel/mcp_place.py place /abs/scratch/r1s_fills.json replace
+python "$PLUGIN_ROOT/tools/voxel/mcp_place.py" place /abs/scratch/r1s_fills.json replace
 # --dimension minecraft:the_nether to target another dimension (default overworld)
 ```
 

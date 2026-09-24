@@ -27,7 +27,7 @@ The mesh path needs extras beyond the core toolkit (`numpy` + `pillow`):
 core stays light:
 
 ```sh
-python -m pip install -r ${CLAUDE_PLUGIN_ROOT}/tools/requirements-mesh.txt
+python -m pip install -r "$PLUGIN_ROOT/tools/requirements-mesh.txt"
 ```
 
 If a run reports `ModuleNotFoundError: trimesh` (or `scipy`/`networkx`/`lxml`),
@@ -42,7 +42,7 @@ pose → label → color → render → `.npy`).
 import zipfile, xml.etree.ElementTree as ET
 import numpy as np, trimesh
 import os, sys
-sys.path.insert(0, os.path.join(os.environ["CLAUDE_PLUGIN_ROOT"], "tools"))
+sys.path.insert(0, os.path.join(os.environ["PLUGIN_ROOT"], "tools"))
 from voxel import Palette, VoxelModel, render_views, write_fills_json
 
 TARGET_H = 78                                    # desired height in blocks

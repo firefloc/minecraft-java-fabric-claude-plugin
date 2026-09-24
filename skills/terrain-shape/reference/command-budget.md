@@ -141,7 +141,7 @@ surface → water in one pass, with no 8192-entry cap — tile to ≤65,536 colu
 This is faster than emitting per-box fills and sidesteps scratch-and-capture for
 one-off landforms. **Fall back** to `block_fill_batch` / `block_fill_region`
 (via `tools/voxel/mcp_place.py`) on older mods. Probe `tools/list` first; see
-`${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md § Terrain helpers`.
+`$PLUGIN_ROOT/reference/execution/engine-limits.md § Terrain helpers`.
 
 ## Randomness without `/random`
 

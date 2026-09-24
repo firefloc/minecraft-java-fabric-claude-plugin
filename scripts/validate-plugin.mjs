@@ -293,6 +293,59 @@ if (existsSync(taxPath)) {
   }
 }
 
+// --- host portability (Claude Code / Codex / Hermes Agent) ---
+// The three hosts share skills/, reference/ and tools/. These checks fail the
+// build when a shared instruction quietly assumes one host: a missing host
+// connection guide, a hardcoded prefixed MCP tool name, or an executable
+// Claude-only path token.
+const HOST_TABLE = "reference/runtime-portability.md";
+// documents the token itself, so it is the one shared file allowed to contain it
+const CLAUDE_AGENT_DEFS = ["agents/minecraft-builder.md"]; // Claude agent definition
+for (const rel of ["reference/mcp/codex-connection.md", "reference/mcp/hermes-connection.md"]) {
+  if (!existsSync(join(root, rel))) fail(`missing host connection guide: ${rel}`);
+}
+
+// The 30-skill suite is the contract: a dropped skill must not ship silently.
+const EXPECTED_SKILLS = [
+  "minecraft-builder", "minecraft-mcp-setup",
+  "build-natural-world", "build-settlement", "build-structure", "build-systems",
+  "survey-site", "survey-research",
+  "terrain-shape", "terrain-landmark", "terrain-ecology", "terrain-integrate", "terrain-cave",
+  "design-house", "design-village", "design-city", "design-building", "design-monument",
+  "design-grounds",
+  "system-redstone", "system-transit",
+  "exec-plan", "exec-blueprint", "exec-worker", "exec-inspect", "exec-reflect",
+  "setup-fabric", "setup-mod", "setup-server", "setup-connect",
+];
+for (const name of EXPECTED_SKILLS) {
+  if (!skillSet.has(name)) fail(`skills/${name}/: missing from the 30-skill suite`);
+}
+
+const portabilityDocs = [
+  ...walkMd(skillsDir, []),
+  ...walkMd(join(root, "reference"), []),
+  ...walkMd(agentsDir, []),
+].filter((abs) => {
+  const rel = relOf(abs);
+  return rel !== HOST_TABLE && !CLAUDE_AGENT_DEFS.includes(rel);
+});
+for (const abs of portabilityDocs) {
+  const rel = relOf(abs);
+  const text = readFileSync(abs, "utf8");
+  // Claude Code and Codex prefix `mcp__minecraft-java__*`; Hermes Agent
+  // normalizes the hyphens away. A shared instruction names the server plus the
+  // native Java tool and lets the host resolve the prefix, so the hyphenated
+  // spelling belongs only in the host table.
+  if (/mcp__minecraft-java/.test(text)) {
+    fail(`${rel}: shared instruction hardcodes the hyphenated MCP prefix mcp__minecraft-java*`);
+  }
+  // ${CLAUDE_PLUGIN_ROOT} is expanded by Claude Code only; shared examples use
+  // $PLUGIN_ROOT so the same command runs on all three hosts.
+  if (/\$\{CLAUDE_PLUGIN_ROOT\}/.test(text)) {
+    fail(`${rel}: shared instruction executes \${CLAUDE_PLUGIN_ROOT} — use $PLUGIN_ROOT`);
+  }
+}
+
 // --- report ---
 if (errors.length) {
   console.error(`✗ validation failed (${errors.length}):`);

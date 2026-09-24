@@ -61,7 +61,8 @@ the user to run the `minecraft-mcp-setup` agent.
 2. **Interview, adaptively.** Run the question set from
    `reference/interview.md` sized to the tier (≈5 questions for a starter,
    up to ≈25 for a megabase). Ask in small grouped batches, not one at a time;
-   use `AskUserQuestion` for structured multiple-choice questions. Branch — if
+   ask through the active host's question interface, using structured
+   multiple-choice options where the host supports them. Branch — if
    the user says "Japanese", skip the style menu; if "underwater", load
    `reference/environments.md` and ask the conduit follow-ups. Record answers
    in `.minecraft-builder/<project>/requirements.md`.
@@ -95,7 +96,7 @@ the user to run the `minecraft-mcp-setup` agent.
    create tools; underscore-only IDs are rejected).
 
    **Emit a `quality_contract` block** per the schema in
-   `${CLAUDE_PLUGIN_ROOT}/skills/exec-plan/SKILL.md`.
+   `$PLUGIN_ROOT/skills/exec-plan/SKILL.md`.
    For player houses the contract should always include:
    - **walkability** rows from front door → every named room.
    - **doors** rows for every external door (so none face a cliff) and every
@@ -133,7 +134,7 @@ Read the file for the step you are on — do not load them all up front:
 
 For volume limits, the 64×384×64 structure cap, tiled fills, and ticking
 areas, follow the **`terrain-shape` skill's
-`${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`**.
+`$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`**.
 
 ## Hard rules
 

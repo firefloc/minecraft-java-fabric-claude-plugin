@@ -18,7 +18,7 @@ terrain phase that omits the rows below, or that was authored as stacked
 rectangles, never executes — the refusal is the gate, not the inspection's
 after-the-fact judgement. (Override with `--force` only for a genuinely
 rectilinear build that tripped the terrain classifier by accident.) See
-`${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`.
+`$PLUGIN_ROOT/reference/execution/build-harness.md`.
 
 ## Required `quality_contract` rows for any terrain phase
 
@@ -52,7 +52,7 @@ edge_irregularity[1]{edge_name,from,to,max_collinear_run}:
 
 For every "natural" surface fill, count blocks in a representative 10×10×1
 area and require **no single block to exceed 70%** of the cells (or the
-ratio band the palette specifies — `${CLAUDE_PLUGIN_ROOT}/reference/terrain/palettes.md` § biome).
+ratio band the palette specifies — `$PLUGIN_ROOT/reference/terrain/palettes.md` § biome).
 
 ```toon
 block_mix_ratios[1]{surface_name,region_a,region_b,palette,max_single_ratio}:
@@ -108,7 +108,7 @@ runs every row's sampling algorithm against the world with `block_get_state` /
 - **FAIL** — the violation is fundamental (e.g. the silhouette is a
   perfectly flat plateau); recommend regenerating the heightmap from scratch.
 
-See `${CLAUDE_PLUGIN_ROOT}/skills/exec-inspect/reference/contract-checks.md` for the precise sampling
+See `$PLUGIN_ROOT/skills/exec-inspect/reference/contract-checks.md` for the precise sampling
 algorithms and tolerances.
 
 ## What to do when a contract row fails
@@ -123,7 +123,7 @@ save. On `CORRECTIONS NEEDED`, **fix the root cause**, not the symptom:
 - Block-mix ratio fails → the palette generator is picking one block too
   often; retune the weights and re-place.
 - Foundation visibility fails → apply the talus-skirt rescue from
-  `${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/landforms.md`; do not paint over with a single block type.
+  `$PLUGIN_ROOT/skills/terrain-shape/reference/landforms.md`; do not paint over with a single block type.
 
 Then **re-sample after acting** to confirm the fix landed and did not break
 a neighbouring contract row. Verify is not optional.

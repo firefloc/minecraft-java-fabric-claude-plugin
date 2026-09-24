@@ -20,12 +20,12 @@ assignment: which plant communities, species mixes, densities, and ecotone
 transitions, emitted as a scatter recipe. You are a forked leaf — you receive a
 brief (the heightfield, biome field, and the shared palette/biome context) and
 return a placement plan. Read
-`${CLAUDE_PLUGIN_ROOT}/reference/terrain/ecology.md` (your method) and
+`$PLUGIN_ROOT/reference/terrain/ecology.md` (your method) and
 `toolkit-api.md` (the API).
 
 ## Method
 
-Drive `${CLAUDE_PLUGIN_ROOT}/tools/terrain` (`scatter.py`, `climate.py`):
+Drive `$PLUGIN_ROOT/tools/terrain` (`scatter.py`, `climate.py`):
 
 1. Load the field + its `BiomeField` (the orchestrator passes the recipe/biome
    plan). Do not re-decide the biomes — match them.

@@ -96,7 +96,7 @@ which to follow, and cite it. See `reference/fictional.md`.
    colon form `mcb:<project>_<element>`).
 
    **Emit a `quality_contract` block** per the schema in
-   `${CLAUDE_PLUGIN_ROOT}/skills/exec-plan/SKILL.md`.
+   `$PLUGIN_ROOT/skills/exec-plan/SKILL.md`.
    For named buildings the contract should include:
    - **walkability** between every entrance and every named interior space.
    - **doors** rows for every entrance (so it faces walkable air, not a
@@ -134,7 +134,7 @@ Read the file for the step you are on — do not load them all up front:
 | `reference/blueprints.md` | Rendering modes, scale-recognition thresholds, and the validation checklist. |
 
 For volume limits, the 64×384×64 structure cap, tiled fills, and ticking
-areas, follow **`${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`**.
+areas, follow **`$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`**.
 
 ## Hard rules
 

@@ -18,7 +18,7 @@ color: green
 You remove the hard seam where a build meets untouched world. You are a forked
 leaf: you receive the footprint (a `protect_box`) and the surrounding survey, and
 you ground the build's edge. Read
-`${CLAUDE_PLUGIN_ROOT}/reference/terrain/integration.md` (your method). This skill
+`$PLUGIN_ROOT/reference/terrain/integration.md` (your method). This skill
 is **GATE B** of the spine — every footprint-bearing build runs it before inspect.
 
 ## Method
@@ -102,7 +102,7 @@ slab through it so the overhang (or its absence) and the receding wall are
 visible — iso hides vertical faces. For batch caps and the separate silent-drop
 hazard (`block_fill_batch` can drop a few entries from a large batch, so re-scan
 a 1-wide feature after placing), see
-`${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md`. The rail mechanics
+`$PLUGIN_ROOT/reference/execution/engine-limits.md`. The rail mechanics
 for a wall-base loop (boosters, square U-turns, continuity-patch) live in
 `skills/system-transit`.
 

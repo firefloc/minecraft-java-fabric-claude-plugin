@@ -1,11 +1,12 @@
 # Contributing
 
-Thanks for your interest in improving the Minecraft Java Claude Code + Codex plugin.
+Thanks for your interest in improving the Minecraft Java Claude Code + Codex +
+Hermes Agent plugin.
 
 ## What's in this repo
 
-This is a dual-host plugin — there is no build step for the markdown content and
-no runtime code in the plugin itself. It is made of:
+This is a three-host plugin — there is no build step for the markdown content
+and no runtime code in the plugin itself. It is made of:
 
 - `.claude-plugin/plugin.json` — the plugin manifest.
 - `.claude-plugin/marketplace.json` — the marketplace manifest.
@@ -14,19 +15,45 @@ no runtime code in the plugin itself. It is made of:
 - `agents/codex-*.md` — compact Codex agent adapters.
 - `skills/<name>/SKILL.md` — agent skills, each with YAML frontmatter.
 - `agents/<name>.md` — agents, each with YAML frontmatter.
-- `skills/minecraft-*/` — thin Codex entrypoints that reuse the shared workflow.
+- `skills/minecraft-*/` — thin entrypoints that reuse the shared workflow.
+- `reference/mcp/codex-connection.md`, `reference/mcp/hermes-connection.md` —
+  the per-host connection guides; Hermes has no manifest, it registers this
+  checkout through `skills.external_dirs` and `mcp_servers`.
 
 ## Checks
 
 Every change must pass the validation CI runs. Run it locally with Node 20+:
 
 ```sh
-node scripts/validate-plugin.mjs
+node scripts/validate-plugin.mjs   # manifests, skills, links, host portability
+node --test scripts/tests/*.test.mjs
+```
+
+For Hermes Agent, one script covers the static checks and the live ones (it
+SKIPs whatever is not present, so it is safe to run anywhere):
+
+```sh
+python3 scripts/hermes-smoke.py     # add HERMES_HOME=... to target a profile
 ```
 
 It checks that the manifests and `.mcp.json.example` parse, that every skill
-and agent has the required frontmatter, and that skill folder names match the
-`name` in their frontmatter.
+and agent has the required frontmatter, that skill folder names match the
+`name` in their frontmatter, that every reference link resolves, and that the
+three-host portability invariants hold: both connection guides exist, all 30
+skills are present, no shared instruction hardcodes the hyphenated
+`mcp__minecraft-java*` prefix, and no shared instruction executes
+`${CLAUDE_PLUGIN_ROOT}`.
+
+The regression tests cover those portability checks — each one breaks a
+throwaway copy of the repo and asserts the validator fails on it.
+
+The Python toolkits under `tools/` have their own suite. It needs
+`python -m pip install -r tools/requirements.txt` and must be run manually
+(it is not part of the dependency-free CI job):
+
+```sh
+python -m pytest tools/builder/tests tools/terrain/tests tools/voxel/tests
+```
 
 For the full Codex manifest schema, also run the Codex plugin validator when it
 is available in your installation:
@@ -58,6 +85,11 @@ python <codex-install>/skills/.system/plugin-creator/scripts/validate_plugin.py 
 - Keep `minecraft-java` and `minecraft-java-client` as the MCP server names and
   keep the existing Java tool names unchanged. See
   `reference/runtime-portability.md` for host-neutral model and path rules.
+- **Name the server, not the prefix.** Shared instructions say server +
+  native Java tool (`minecraft-java` + `server_get_status`); each host resolves
+  its own prefixed spelling. Use `$PLUGIN_ROOT` for the plugin root in shared
+  examples — `${CLAUDE_PLUGIN_ROOT}` is Claude-only and the validator rejects
+  it outside the host table and the Claude agent definition.
 
 ## Releasing
 

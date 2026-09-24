@@ -43,9 +43,9 @@ that the world is not connected.
   full-volume scan into context), `block_scan_summary` (histogram + non-air
   bounds digest), `structure_list`, `entity_query`, and `block_render_region`
   (a PNG of a region — your fastest path to *seeing* a representational build).
-- **When the `minecraft-java-client` inspection server is connected**
-  (`mcp__minecraft-java-client__*`): `view_capture` (the player's real
-  first-person frame — true lighting/sky/textures/entities), plus `client_status`
+- **When the `minecraft-java-client` inspection server is connected**:
+  `view_capture` (the player's real first-person frame — true
+  lighting/sky/textures/entities), plus `client_status`
   / `sense_crosshair` / `sense_raycast` / `sense_entities` / `sense_screen`. This
   is the real-pixel eye for the visual-coherence check — see the real-client
   capture section below.
@@ -61,7 +61,7 @@ that the world is not connected.
 ## The checks
 
 **Start from the harness report.** The build+verify harness (`harness.py verify`,
-see `${CLAUDE_PLUGIN_ROOT}/reference/execution/build-harness.md`) already runs the
+see `$PLUGIN_ROOT/reference/execution/build-harness.md`) already runs the
 **mechanical** checks — plan fidelity (`acceptance`) and the whole
 `quality_contract` — and returns PASS / CORRECTIONS NEEDED / FAIL with the exact
 failing samples and routing hints. Your job is the judgement the harness
@@ -128,11 +128,11 @@ This is the check a literal step-by-step verifier misses. Look for:
   feature where every cell matters, sampling a few corners is not enough — a
   single missing cell breaks the whole route, and `block_fill_batch` can
   silently drop a handful of entries from a large batch with no error (see
-  `${CLAUDE_PLUGIN_ROOT}/reference/execution/engine-limits.md`). On the Zion rail
+  `$PLUGIN_ROOT/reference/execution/engine-limits.md`). On the Zion rail
   loop, one batch of 1,928 one-block fills left 4 cells unplaced; the cart
   stalled dead at each gap. **Verify with a layer-scan-and-patch, not spot
   checks:** run the continuity verifier
-  `${CLAUDE_PLUGIN_ROOT}/tools/voxel/continuity.py` —
+  `$PLUGIN_ROOT/tools/voxel/continuity.py` —
   `verify_and_patch(intended_cells, dimension, y, shape_of=…, block="minecraft:rail")`
   scans the feature's Y-layer, diffs the intended cell list with
   `find_gaps(intended, present)` (a pure set diff), and `set_state`s the missing
@@ -152,7 +152,7 @@ to diagnose — not to `exec-worker`.
 
 If the recipe declares a **manual kick step** (an initial player trigger
 required to start a self-cycling redstone clock that did not self-start — see
-`${CLAUDE_PLUGIN_ROOT}/skills/system-redstone/reference/setblock-redstone-limits.md`), record the kick step
+`$PLUGIN_ROOT/skills/system-redstone/reference/setblock-redstone-limits.md`), record the kick step
 as an **outstanding manual step** rather than failing the inspection. On Java
 Edition, `block_set_state` with default update flags issues neighbor updates so
 many clocks self-start; but some loop configurations still need an initial
@@ -227,7 +227,7 @@ For any representational or voxelized build, verify it **visually**:
    context. Fallback if that tool is absent: scan the region **paged**
    `block_scan_region` (never a raw full-volume scan — a single underground slab
    of per-block YAML can blow the context limit), rebuild a grid, and render it
-   with the `voxel` toolkit (`${CLAUDE_PLUGIN_ROOT}/tools/voxel`,
+   with the `voxel` toolkit (`$PLUGIN_ROOT/tools/voxel`,
    `render_views`).
 2. **Compare** the render to the reference images and to the design-time render
    `design-monument` approved. Judge silhouette, proportion, palette.
@@ -306,7 +306,7 @@ clashing seam" failure to the orchestrator with a routing hint to `terrain-shape
 
 ### Java-exclusive: real-client capture (the `minecraft-java-client` server)
 
-When the **inspection server** is connected (`mcp__minecraft-java-client__*` tools
+When the **inspection server** is connected (`minecraft-java-client` tools
 are available — see the `setup-connect` skill), you can SEE the build with the
 **real Minecraft client's pixels**: actual lighting, day/night sky, fog, water,
 foliage, entities, and a true eye-level perspective camera. This is the closest
@@ -322,9 +322,10 @@ of labour between the two servers matters:
    `minecraft-java` (world) server: `entity_teleport`, or
    `command_execute("tp <player> <x> <y> <z> <yaw> <pitch>")`. Teleporting with a
    rotation snaps the client camera to that pose.
-2. **Capture from the client server.** Call `mcp__minecraft-java-client__view_capture`
-   and `Read` the returned PNG. Sample the same `rider_pov` camera positions/facings
-   you would have rendered — a few points along the route/loop.
+2. **Capture from the client server.** Call `view_capture` on the
+   `minecraft-java-client` server and read the returned PNG. Sample the same
+   `rider_pov` camera positions/facings you would have rendered — a few points
+   along the route/loop.
 3. **Confirm the vantage** with `client_status` (position + facing), and use
    `sense_crosshair` / `sense_entities` if you need to verify what the camera is
    actually centred on.
@@ -332,10 +333,17 @@ of labour between the two servers matters:
    came from the real client (`source: client`) or the synthetic render
    (`source: render`) so the verification record is honest about fidelity.
 
-Graceful degradation: if `mcp__minecraft-java-client__*` is **not** connected (a
+Graceful degradation: if the `minecraft-java-client` server is **not** connected (a
 headless server-only setup, or no client joined), fall back to the existing path —
 `block_render_region` `view: iso` + an eye-level slice — and keep the **user visual
-checkpoint** as the gate. A real-client frame you judged yourself is still
+checkpoint** as the gate. **Say so in the report**: an inspection that had no
+rendered client is reported as *server-only inspection*, never as a visual check.
+If `client_status` reports `in_game: false`, the client is sitting on the title
+screen — ask the user to join a world and retry rather than capturing a menu. And
+if the `minecraft-java` world server itself is unreachable, the inspection cannot
+run at all: report the check as **pending**, do not pass it, and leave the
+register step unexecuted.
+A real-client frame you judged yourself is still
 self-assessment, not verification; it is a much stronger signal than the synthetic
 render, but under autonomy with no user, treat a clean real-client eye-level pass as
 the minimum bar and flag anything ambiguous for a human look.

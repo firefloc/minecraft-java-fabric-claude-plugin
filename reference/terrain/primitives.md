@@ -2,8 +2,8 @@
 
 Reusable building blocks for natural wonders. Each primitive has a typical
 size range, a **build method** (`carve` = build solid then cut; `build-up` =
-additive — see `${CLAUDE_PLUGIN_ROOT}/skills/terrain-landmark/reference/sequencing.md`), and an approach. Every primitive lives within
-the limits in `${CLAUDE_PLUGIN_ROOT}/skills/terrain-shape/reference/command-budget.md`.
+additive — see `$PLUGIN_ROOT/skills/terrain-landmark/reference/sequencing.md`), and an approach. Every primitive lives within
+the limits in `$PLUGIN_ROOT/skills/terrain-shape/reference/command-budget.md`.
 
 Naming: save primitive instances as structure templates `mcb:<project>_<primitive>_<index>` (colon namespace — the underscore-only form is rejected by the structure tools).
 
@@ -146,7 +146,7 @@ Brief — same parameter discipline applies.
   deliberate one-offs and **never duplicated**. **cypress-knee-patch /
   mangrove-root-cluster** — specialty ground vegetation. For ordinary trees and
   any grove, **grow saplings — never place or repeat a tree** — see
-  `${CLAUDE_PLUGIN_ROOT}/reference/terrain/weathering.md`.
+  `$PLUGIN_ROOT/reference/terrain/weathering.md`.
 
 ## Common mistakes
 
